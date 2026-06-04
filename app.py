@@ -32,10 +32,13 @@ import sqlite3
 BASE_DIR = Path(__file__).resolve().parent
 _IS_VERCEL = bool(os.getenv("VERCEL") or os.getenv("VERCEL_ENV"))
 
+# 읽기 전용 JSON 가이드는 항상 번들 경로 (Vercel에서 DATA_DIR=/tmp 와 분리)
+GUIDE_DATA_DIR = BASE_DIR / "data"
+
 if _IS_VERCEL:
     DATA_DIR = Path("/tmp/airangfit-data")
 else:
-    DATA_DIR = BASE_DIR / "data"
+    DATA_DIR = GUIDE_DATA_DIR
 
 UPLOAD_DIR = DATA_DIR / "uploads"
 DB_PATH = DATA_DIR / "db.sqlite3"
@@ -688,8 +691,8 @@ class ParentProfilesUpdate(BaseModel):
 # 유틸리티
 # ---------------------------------------------------------------------------
 
-SHOPPING_GUIDE_PATH = DATA_DIR / "shopping_guide.json"
-FINANCE_GUIDE_PATH = DATA_DIR / "finance_guide.json"
+SHOPPING_GUIDE_PATH = GUIDE_DATA_DIR / "shopping_guide.json"
+FINANCE_GUIDE_PATH = GUIDE_DATA_DIR / "finance_guide.json"
 FORTUNE_DAILY_LIMIT = 3
 
 
