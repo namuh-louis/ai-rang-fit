@@ -30,3 +30,6 @@ data/images/*
 
 # 로그
 *.log
+
+# Vercel
+.vercel

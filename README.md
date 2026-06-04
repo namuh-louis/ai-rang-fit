@@ -33,21 +33,17 @@ git branch -M main
 git push -u origin main
 ```
 
-## Render로 배포 (GitHub 연동)
+## Vercel로 배포 (GitHub 연동)
 
-1. [Render](https://render.com) 가입 → **New** → **Blueprint**
-2. 방금 푸시한 **GitHub 저장소** 연결
-3. `render.yaml` 인식 후 **Apply** → 배포 완료까지 5~10분
-4. 생성된 URL 예: `https://ai-rang-fit.onrender.com` → 지인에게 전달
+1. GitHub에 `main` 브랜치 푸시 (아래 참고)
+2. [Vercel](https://vercel.com) → **Add Project** → GitHub `ai-rang-fit` Import
+3. **Deploy** → URL 예: `https://ai-rang-fit.vercel.app`
 
-### 무료 플랜 참고
-
-- 15분 미사용 시 슬립 → 첫 접속 30초~1분 지연 가능 (지인 테스트 시 미리 한 번 열어두기)
-- DB·업로드는 재배포 시 초기화될 수 있음 → 데모 계정으로 테스트 권장
+자세한 단계: [DEPLOY.md](./DEPLOY.md)
 
 ### 환경 변수 (선택)
 
-Render 대시보드 → Service → Environment:
+Vercel → Project → Settings → Environment Variables:
 
 | 변수 | 설명 |
 |------|------|
@@ -66,5 +62,6 @@ app.py              # FastAPI 메인
 data/               # JSON 가이드, SQLite(로컬)
 templates/          # index.html
 static/js/          # app.js, finance-guide.js, …
-render.yaml         # Render 배포 설정
+vercel.json         # Vercel 배포 설정
+api/index.py        # Vercel serverless 진입점
 ```

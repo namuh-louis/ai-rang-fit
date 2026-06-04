@@ -27,10 +27,16 @@ from sqlalchemy.pool import StaticPool
 import sqlite3
 
 # ---------------------------------------------------------------------------
-# 경로 설정
+# 경로 설정 (Vercel: /tmp 에만 쓰기 가능 → DB·업로드는 /tmp)
 # ---------------------------------------------------------------------------
 BASE_DIR = Path(__file__).resolve().parent
-DATA_DIR = BASE_DIR / "data"
+_IS_VERCEL = bool(os.getenv("VERCEL") or os.getenv("VERCEL_ENV"))
+
+if _IS_VERCEL:
+    DATA_DIR = Path("/tmp/airangfit-data")
+else:
+    DATA_DIR = BASE_DIR / "data"
+
 UPLOAD_DIR = DATA_DIR / "uploads"
 DB_PATH = DATA_DIR / "db.sqlite3"
 
