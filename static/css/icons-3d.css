@@ -1,0 +1,254 @@
+/* ================================================================ */
+/* 3D 아이콘 — 픽사/드림웍스 스타일 (입체·글로시·부드러운 모션)      */
+/* ================================================================ */
+
+.icon-3d {
+    display: inline-block;
+    vertical-align: middle;
+    object-fit: contain;
+    flex-shrink: 0;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.14))
+            drop-shadow(0 1px 2px rgba(255, 255, 255, 0.5));
+    transform-origin: center bottom;
+}
+
+.icon-3d-anim {
+    animation: icon3d-float 2.8s ease-in-out infinite;
+}
+
+.icon-3d-anim:nth-child(2n) {
+    animation-delay: -0.6s;
+}
+
+.icon-3d-anim:nth-child(3n) {
+    animation-delay: -1.2s;
+}
+
+@keyframes icon3d-float {
+    0%, 100% {
+        transform: translateY(0) scale(1) rotate(0deg);
+    }
+    35% {
+        transform: translateY(-5px) scale(1.04) rotate(-2deg);
+    }
+    70% {
+        transform: translateY(-2px) scale(1.02) rotate(1.5deg);
+    }
+}
+
+/* 상단 헤더 아기 사진 */
+.header-baby-photo {
+    font-size: 0;
+    background: linear-gradient(145deg, #FFF5F8 0%, #FFE4EF 100%);
+}
+
+.header-baby-photo .icon-3d,
+.header-baby-photo .header-baby-img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* 프로필 없을 때 — 픽사/드림웍스 느낌의 부드러운 3D 플로트 */
+.header-baby-photo .icon-3d-header {
+    animation: icon3d-header-float 3.2s ease-in-out infinite;
+    filter: drop-shadow(0 4px 10px rgba(255, 107, 157, 0.35))
+            drop-shadow(0 2px 4px rgba(0, 0, 0, 0.12));
+}
+
+@keyframes icon3d-header-float {
+    0%, 100% { transform: translateY(0) scale(1) rotate(0deg); }
+    35% { transform: translateY(-5px) scale(1.06) rotate(-2deg); }
+    70% { transform: translateY(-2px) scale(1.03) rotate(2deg); }
+}
+
+.header-baby-img {
+    object-fit: cover;
+    display: block;
+}
+
+/* 하단 네비 */
+.nav-icon-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 32px;
+}
+
+.nav-icon-wrap .icon-3d {
+    width: 28px !important;
+    height: 28px !important;
+}
+
+.nav-item.active .icon-3d {
+    filter: drop-shadow(0 5px 12px rgba(255, 107, 157, 0.45))
+            drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+    transform: scale(1.08);
+}
+
+/* 사이드 메뉴 */
+.side-menu-logo-icon {
+    font-size: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.side-menu-logo-icon .icon-3d {
+    width: 36px !important;
+    height: 36px !important;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.menu-item [data-icon] {
+    width: 26px;
+    height: 26px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.menu-item [data-icon] .icon-3d {
+    width: 24px !important;
+    height: 24px !important;
+}
+
+/* 홈 v2 */
+.home-live-icon,
+.home-issues-icon,
+.home-coaching-bot,
+.home-milestone-icon {
+    font-size: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.home-live-icon .icon-3d {
+    width: 32px !important;
+    height: 32px !important;
+}
+
+.home-growth-title [data-icon],
+.home-growth-title .icon-3d-inline {
+    vertical-align: -6px;
+    margin-right: 4px;
+}
+
+.home-schedule-card > [data-icon],
+.home-schedule-card > .icon-3d-slot {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+}
+
+.home-quick-grid button [data-icon] {
+    display: block;
+    margin: 0 auto 6px;
+    width: 36px;
+    height: 36px;
+}
+
+.home-quick-grid button .icon-3d {
+    width: 34px !important;
+    height: 34px !important;
+}
+
+.home-issue-chip [data-icon] {
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+}
+
+/* 대시보드·기록 카드 */
+.dash-icon,
+.record-icon,
+.summary-chip-icon,
+.alert-icon {
+    font-size: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dash-icon .icon-3d,
+.record-icon .icon-3d {
+    width: 36px !important;
+    height: 36px !important;
+}
+
+.summary-chip-icon .icon-3d {
+    width: 32px !important;
+    height: 32px !important;
+}
+
+.alert-icon .icon-3d {
+    width: 28px !important;
+    height: 28px !important;
+}
+
+.icon-3d-lg {
+    width: 56px !important;
+    height: 56px !important;
+}
+
+.icon-3d-xl {
+    width: 72px !important;
+    height: 72px !important;
+}
+
+/* 대변(stool) — 3D 💩 */
+.icon-stool-3d {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+.icon-stool-emoji {
+    line-height: 1;
+    user-select: none;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2))
+            drop-shadow(0 2px 4px rgba(92, 69, 16, 0.25))
+            drop-shadow(0 1px 0 rgba(255, 255, 255, 0.5));
+    transform-origin: center bottom;
+}
+
+.icon-stool-3d.icon-3d-anim {
+    animation: icon3d-float 2.8s ease-in-out infinite;
+}
+
+.rs-who-icon .icon-stool-3d,
+.rs-mini-chart-label .icon-stool-3d,
+.pattern-week-avg-icon-item .icon-stool-3d,
+.pattern-legend-3d .icon-stool-3d,
+.who-gauge-icon .icon-stool-3d,
+.record-icon-3d .icon-stool-3d,
+.btn-with-icon .icon-stool-3d,
+.section-title-with-icon .icon-stool-3d,
+.home-live-icon .icon-stool-3d,
+.menu-item [data-icon="stool"] .icon-stool-3d,
+.menu-item [data-icon="bowel"] .icon-stool-3d,
+.rs-quick-btn .icon-stool-3d,
+.rs-today-stool .icon-stool-3d,
+.bar-card-title-3d .icon-stool-3d {
+    vertical-align: middle;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .icon-3d-anim,
+    .icon-stool-3d.icon-3d-anim {
+        animation: none;
+    }
+}

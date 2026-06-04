@@ -1,0 +1,32 @@
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+
+# 환경·비밀
+.env
+.env.local
+
+# 로컬 DB·업로드 (배포 시 init_demo_data로 생성)
+data/db.sqlite3
+data/uploads/*
+data/photos/*
+data/albums/*
+data/images/*
+!data/uploads/.gitkeep
+!data/photos/.gitkeep
+!data/albums/.gitkeep
+!data/images/.gitkeep
+
+# OS·IDE
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# 로그
+*.log

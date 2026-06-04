@@ -1,0 +1,27 @@
+{
+  "name": "우리 아이 육아 파트너",
+  "short_name": "우리아이",
+  "description": "기록, 추억, 발달, 금융까지 올인원 육아 앱",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#FF6B9D",
+  "background_color": "#ffffff",
+  "lang": "ko",
+  "icons": [
+    {
+      "src": "/static/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/static/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [],
+  "categories": ["lifestyle", "health", "parenting"]
+}

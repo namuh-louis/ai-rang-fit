@@ -1,0 +1,602 @@
+{
+  "disclaimer": "가격·리뷰·구매건수는 갱신 시점 기준이며 실제와 다를 수 있습니다. 쿠팡·네이버에서 최종 확인하세요.",
+  "updated_at": "2026-06-03",
+  "keywords": [
+    {
+      "key": "basic",
+      "label": "기본템",
+      "products": [
+        {
+          "key": "diapers",
+          "label": "기저귀",
+          "items": [
+            {
+              "rank": 1,
+              "name": "하기스 네이처메이드 밤부 1단계",
+              "image_url": "https://picsum.photos/seed/diapers1/240/240",
+              "coupang": { "price": 28900, "url": "https://www.coupang.com/np/search?q=하기스+네이처메이드+1단계", "purchase_count": 8420, "review_count": 12400 },
+              "naver": { "price": 27500, "url": "https://search.shopping.naver.com/search/all?query=하기스+네이처메이드+1단계", "purchase_count": null, "review_count": 9800 }
+            },
+            {
+              "rank": 2,
+              "name": "팸퍼스 프리미엄 케어 1호",
+              "image_url": "https://picsum.photos/seed/diapers2/240/240",
+              "coupang": { "price": 31900, "url": "https://www.coupang.com/np/search?q=팸퍼스+프리미엄+1호", "purchase_count": 15200, "review_count": 22100 },
+              "naver": { "price": 30200, "url": "https://search.shopping.naver.com/search/all?query=팸퍼스+프리미엄+1호", "purchase_count": null, "review_count": 18500 }
+            }
+          ]
+        },
+        {
+          "key": "wipes",
+          "label": "물티슈",
+          "items": [
+            {
+              "rank": 1,
+              "name": "베베숲 물티슈 80매 10팩",
+              "image_url": "https://picsum.photos/seed/wipes1/240/240",
+              "coupang": { "price": 14900, "url": "https://www.coupang.com/np/search?q=베베숲+물티슈", "purchase_count": 22100, "review_count": 31200 },
+              "naver": { "price": 14200, "url": "https://search.shopping.naver.com/search/all?query=베베숲+물티슈", "purchase_count": null, "review_count": 26500 }
+            },
+            {
+              "rank": 2,
+              "name": "아기물티슈 시그니처",
+              "image_url": "https://picsum.photos/seed/wipes2/240/240",
+              "coupang": { "price": 12900, "url": "https://www.coupang.com/np/search?q=아기+물티슈+10팩", "purchase_count": 9800, "review_count": 14200 },
+              "naver": { "price": 12500, "url": "https://search.shopping.naver.com/search/all?query=아기+물티슈+10팩", "purchase_count": null, "review_count": 11800 }
+            }
+          ]
+        },
+        {
+          "key": "thermometer",
+          "label": "체온계",
+          "items": [
+            {
+              "rank": 1,
+              "name": "브라운 귀체온계 IRT6520",
+              "image_url": "https://picsum.photos/seed/thermo1/240/240",
+              "coupang": { "price": 59000, "url": "https://www.coupang.com/np/search?q=브라운+귀체온계", "purchase_count": 6100, "review_count": 8800 },
+              "naver": { "price": 57500, "url": "https://search.shopping.naver.com/search/all?query=브라운+귀체온계", "purchase_count": null, "review_count": 7400 }
+            },
+            {
+              "rank": 2,
+              "name": "비타오닉 이마체온계",
+              "image_url": "https://picsum.photos/seed/thermo2/240/240",
+              "coupang": { "price": 39000, "url": "https://www.coupang.com/np/search?q=아기+이마체온계", "purchase_count": 4200, "review_count": 5600 },
+              "naver": { "price": 37500, "url": "https://search.shopping.naver.com/search/all?query=아기+이마체온계", "purchase_count": null, "review_count": 4900 }
+            }
+          ]
+        },
+        {
+          "key": "pacifier",
+          "label": "쪽쪽이",
+          "items": [
+            {
+              "rank": 1,
+              "name": "필립스 아벤트 쪽쪽이",
+              "image_url": "https://picsum.photos/seed/pacifier1/240/240",
+              "coupang": { "price": 8900, "url": "https://www.coupang.com/np/search?q=필립스+쪽쪽이", "purchase_count": 18500, "review_count": 24200 },
+              "naver": { "price": 8500, "url": "https://search.shopping.naver.com/search/all?query=필립스+쪽쪽이", "purchase_count": null, "review_count": 19800 }
+            },
+            {
+              "rank": 2,
+              "name": "더블하트 실리콘 쪽쪽이",
+              "image_url": "https://picsum.photos/seed/pacifier2/240/240",
+              "coupang": { "price": 6900, "url": "https://www.coupang.com/np/search?q=더블하트+쪽쪽이", "purchase_count": 11200, "review_count": 15600 },
+              "naver": { "price": 6500, "url": "https://search.shopping.naver.com/search/all?query=더블하트+쪽쪽이", "purchase_count": null, "review_count": 12400 }
+            }
+          ]
+        },
+        {
+          "key": "changing_table",
+          "label": "기저귀 갈이대",
+          "items": [
+            {
+              "rank": 1,
+              "name": "리안 아기 갈이대",
+              "image_url": "https://picsum.photos/seed/change1/240/240",
+              "coupang": { "price": 89000, "url": "https://www.coupang.com/np/search?q=아기+기저귀+갈이대", "purchase_count": 4200, "review_count": 6800 },
+              "naver": { "price": 86500, "url": "https://search.shopping.naver.com/search/all?query=아기+기저귀+갈이대", "purchase_count": null, "review_count": 5400 }
+            },
+            {
+              "rank": 2,
+              "name": "라비베베 접이식 갈이대",
+              "image_url": "https://picsum.photos/seed/change2/240/240",
+              "coupang": { "price": 129000, "url": "https://www.coupang.com/np/search?q=라비베베+갈이대", "purchase_count": 2100, "review_count": 3900 },
+              "naver": { "price": 125000, "url": "https://search.shopping.naver.com/search/all?query=라비베베+갈이대", "purchase_count": null, "review_count": 3200 }
+            }
+          ]
+        },
+        {
+          "key": "crib",
+          "label": "아기침대",
+          "items": [
+            {
+              "rank": 1,
+              "name": "리안 아기침대",
+              "image_url": "https://picsum.photos/seed/crib1/240/240",
+              "coupang": { "price": 189000, "url": "https://www.coupang.com/np/search?q=리안+아기침대", "purchase_count": 2800, "review_count": 5100 },
+              "naver": { "price": 192000, "url": "https://search.shopping.naver.com/search/all?query=리안+아기침대", "purchase_count": null, "review_count": 4300 }
+            },
+            {
+              "rank": 2,
+              "name": "라비베베 아기침대",
+              "image_url": "https://picsum.photos/seed/crib2/240/240",
+              "coupang": { "price": 249000, "url": "https://www.coupang.com/np/search?q=라비베베+아기침대", "purchase_count": 1600, "review_count": 3400 },
+              "naver": { "price": 245000, "url": "https://search.shopping.naver.com/search/all?query=라비베베+아기침대", "purchase_count": null, "review_count": 2900 }
+            }
+          ]
+        },
+        {
+          "key": "humidifier_basic",
+          "label": "가습기",
+          "items": [
+            {
+              "rank": 1,
+              "name": "쿠쿠 아기 가습기",
+              "image_url": "https://picsum.photos/seed/humid_b1/240/240",
+              "coupang": { "price": 89000, "url": "https://www.coupang.com/np/search?q=아기+가습기", "purchase_count": 4800, "review_count": 6900 },
+              "naver": { "price": 91000, "url": "https://search.shopping.naver.com/search/all?query=아기+가습기", "purchase_count": null, "review_count": 5800 }
+            },
+            {
+              "rank": 2,
+              "name": "크렉스 초음파 가습기",
+              "image_url": "https://picsum.photos/seed/humid_b2/240/240",
+              "coupang": { "price": 129000, "url": "https://www.coupang.com/np/search?q=크렉스+가습기", "purchase_count": 2100, "review_count": 3400 },
+              "naver": { "price": 125000, "url": "https://search.shopping.naver.com/search/all?query=크렉스+가습기", "purchase_count": null, "review_count": 2900 }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "feeding",
+      "label": "수유",
+      "products": [
+        {
+          "key": "formula",
+          "label": "분유",
+          "items": [
+            {
+              "rank": 1,
+              "name": "아이엠마더 1단계",
+              "image_url": "https://picsum.photos/seed/formula1/240/240",
+              "coupang": { "price": 32900, "url": "https://www.coupang.com/np/search?q=아이엠마더+1단계", "purchase_count": 6800, "review_count": 9100 },
+              "naver": { "price": 31500, "url": "https://search.shopping.naver.com/search/all?query=아이엠마더+1단계", "purchase_count": null, "review_count": 7800 }
+            },
+            {
+              "rank": 2,
+              "name": "압타밀 1단계",
+              "image_url": "https://picsum.photos/seed/formula2/240/240",
+              "coupang": { "price": 45900, "url": "https://www.coupang.com/np/search?q=압타밀+1단계", "purchase_count": 4200, "review_count": 6500 },
+              "naver": { "price": 44200, "url": "https://search.shopping.naver.com/search/all?query=압타밀+1단계", "purchase_count": null, "review_count": 5900 }
+            }
+          ]
+        },
+        {
+          "key": "bottle",
+          "label": "젖병",
+          "items": [
+            {
+              "rank": 1,
+              "name": "유팡 젖병 160ml",
+              "image_url": "https://picsum.photos/seed/bottle1/240/240",
+              "coupang": { "price": 12900, "url": "https://www.coupang.com/np/search?q=유팡+젖병+160", "purchase_count": 11200, "review_count": 15800 },
+              "naver": { "price": 12500, "url": "https://search.shopping.naver.com/search/all?query=유팡+젖병+160", "purchase_count": null, "review_count": 13200 }
+            },
+            {
+              "rank": 2,
+              "name": "더블하트 PPSU 젖병",
+              "image_url": "https://picsum.photos/seed/bottle2/240/240",
+              "coupang": { "price": 15900, "url": "https://www.coupang.com/np/search?q=더블하트+젖병", "purchase_count": 7800, "review_count": 10200 },
+              "naver": { "price": 15200, "url": "https://search.shopping.naver.com/search/all?query=더블하트+젖병", "purchase_count": null, "review_count": 8900 }
+            }
+          ]
+        },
+        {
+          "key": "nipple",
+          "label": "젖꼭지",
+          "items": [
+            {
+              "rank": 1,
+              "name": "더블하트 실리콘 젖꼭지",
+              "image_url": "https://picsum.photos/seed/nipple1/240/240",
+              "coupang": { "price": 8900, "url": "https://www.coupang.com/np/search?q=더블하트+젖꼭지", "purchase_count": 14200, "review_count": 19800 },
+              "naver": { "price": 8500, "url": "https://search.shopping.naver.com/search/all?query=더블하트+젖꼭지", "purchase_count": null, "review_count": 16500 }
+            },
+            {
+              "rank": 2,
+              "name": "유팡 젖꼭지 세트",
+              "image_url": "https://picsum.photos/seed/nipple2/240/240",
+              "coupang": { "price": 12900, "url": "https://www.coupang.com/np/search?q=유팡+젖꼭지", "purchase_count": 9800, "review_count": 12400 },
+              "naver": { "price": 12500, "url": "https://search.shopping.naver.com/search/all?query=유팡+젖꼭지", "purchase_count": null, "review_count": 10200 }
+            }
+          ]
+        },
+        {
+          "key": "formula_maker",
+          "label": "분유제조기",
+          "items": [
+            {
+              "rank": 1,
+              "name": "베이비브레짜 분유제조기",
+              "image_url": "https://picsum.photos/seed/maker1/240/240",
+              "coupang": { "price": 289000, "url": "https://www.coupang.com/np/search?q=베이비브레짜+분유제조기", "purchase_count": 6200, "review_count": 11200 },
+              "naver": { "price": 295000, "url": "https://search.shopping.naver.com/search/all?query=베이비브레짜+분유제조기", "purchase_count": null, "review_count": 9800 }
+            },
+            {
+              "rank": 2,
+              "name": "버블럭스 자동 분유제조기",
+              "image_url": "https://picsum.photos/seed/maker2/240/240",
+              "coupang": { "price": 199000, "url": "https://www.coupang.com/np/search?q=분유제조기+자동", "purchase_count": 4100, "review_count": 7600 },
+              "naver": { "price": 205000, "url": "https://search.shopping.naver.com/search/all?query=분유제조기+자동", "purchase_count": null, "review_count": 6400 }
+            }
+          ]
+        },
+        {
+          "key": "sterilizer",
+          "label": "젖병 소독기",
+          "items": [
+            {
+              "rank": 1,
+              "name": "유팡 UV 젖병소독기",
+              "image_url": "https://picsum.photos/seed/steril1/240/240",
+              "coupang": { "price": 159000, "url": "https://www.coupang.com/np/search?q=유팡+젖병소독기", "purchase_count": 7800, "review_count": 13200 },
+              "naver": { "price": 155000, "url": "https://search.shopping.naver.com/search/all?query=유팡+젖병소독기", "purchase_count": null, "review_count": 10800 }
+            },
+            {
+              "rank": 2,
+              "name": "바램 젖병 소독기",
+              "image_url": "https://picsum.photos/seed/steril2/240/240",
+              "coupang": { "price": 89000, "url": "https://www.coupang.com/np/search?q=젖병+소독기", "purchase_count": 5200, "review_count": 8900 },
+              "naver": { "price": 86500, "url": "https://search.shopping.naver.com/search/all?query=젖병+소독기", "purchase_count": null, "review_count": 7200 }
+            }
+          ]
+        },
+        {
+          "key": "pump",
+          "label": "유축기",
+          "items": [
+            {
+              "rank": 1,
+              "name": "유팡 전동 유축기",
+              "image_url": "https://picsum.photos/seed/pump1/240/240",
+              "coupang": { "price": 189000, "url": "https://www.coupang.com/np/search?q=유팡+유축기", "purchase_count": 5400, "review_count": 11200 },
+              "naver": { "price": 192000, "url": "https://search.shopping.naver.com/search/all?query=유팡+유축기", "purchase_count": null, "review_count": 9800 }
+            },
+            {
+              "rank": 2,
+              "name": "스펙트라 S2 플러스",
+              "image_url": "https://picsum.photos/seed/pump2/240/240",
+              "coupang": { "price": 219000, "url": "https://www.coupang.com/np/search?q=스펙트라+유축기", "purchase_count": 3200, "review_count": 7600 },
+              "naver": { "price": 215000, "url": "https://search.shopping.naver.com/search/all?query=스펙트라+유축기", "purchase_count": null, "review_count": 6800 }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "moro",
+      "label": "모로반사",
+      "products": [
+        {
+          "key": "swaddle",
+          "label": "속싸개",
+          "items": [
+            {
+              "rank": 1,
+              "name": "라비베베 나비잠 속싸개",
+              "image_url": "https://picsum.photos/seed/swaddle1/240/240",
+              "coupang": { "price": 35900, "url": "https://www.coupang.com/np/search?q=나비잠+속싸개", "purchase_count": 7600, "review_count": 8900 },
+              "naver": { "price": 34200, "url": "https://search.shopping.naver.com/search/all?query=나비잠+속싸개", "purchase_count": null, "review_count": 7200 }
+            },
+            {
+              "rank": 2,
+              "name": "엘라바 코골이 속싸개",
+              "image_url": "https://picsum.photos/seed/swaddle2/240/240",
+              "coupang": { "price": 42900, "url": "https://www.coupang.com/np/search?q=엘라바+속싸개", "purchase_count": 4100, "review_count": 5800 },
+              "naver": { "price": 41500, "url": "https://search.shopping.naver.com/search/all?query=엘라바+속싸개", "purchase_count": null, "review_count": 4900 }
+            }
+          ]
+        },
+        {
+          "key": "sleep_sack",
+          "label": "수면조끼",
+          "items": [
+            {
+              "rank": 1,
+              "name": "라비베베 수면조끼",
+              "image_url": "https://picsum.photos/seed/sleepsack1/240/240",
+              "coupang": { "price": 38900, "url": "https://www.coupang.com/np/search?q=라비베베+수면조끼", "purchase_count": 5200, "review_count": 7100 },
+              "naver": { "price": 37200, "url": "https://search.shopping.naver.com/search/all?query=라비베베+수면조끼", "purchase_count": null, "review_count": 6200 }
+            },
+            {
+              "rank": 2,
+              "name": "HALO SleepSack",
+              "image_url": "https://picsum.photos/seed/sleepsack2/240/240",
+              "coupang": { "price": 45900, "url": "https://www.coupang.com/np/search?q=할로+수면조끼", "purchase_count": 2800, "review_count": 4200 },
+              "naver": { "price": 44800, "url": "https://search.shopping.naver.com/search/all?query=할로+수면조끼", "purchase_count": null, "review_count": 3600 }
+            }
+          ]
+        },
+        {
+          "key": "white_noise",
+          "label": "백색소음기",
+          "items": [
+            {
+              "rank": 1,
+              "name": "마르마 백색소음기",
+              "image_url": "https://picsum.photos/seed/whitenoise1/240/240",
+              "coupang": { "price": 49000, "url": "https://www.coupang.com/np/search?q=마르마+백색소음", "purchase_count": 3600, "review_count": 5400 },
+              "naver": { "price": 47500, "url": "https://search.shopping.naver.com/search/all?query=마르마+백색소음", "purchase_count": null, "review_count": 4700 }
+            },
+            {
+              "rank": 2,
+              "name": "쉬소리 백색소음기",
+              "image_url": "https://picsum.photos/seed/whitenoise2/240/240",
+              "coupang": { "price": 32900, "url": "https://www.coupang.com/np/search?q=쉬소리+백색소음", "purchase_count": 2900, "review_count": 4100 },
+              "naver": { "price": 31800, "url": "https://search.shopping.naver.com/search/all?query=쉬소리+백색소음", "purchase_count": null, "review_count": 3500 }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "play",
+      "label": "놀이",
+      "products": [
+        {
+          "key": "mobile",
+          "label": "모빌",
+          "items": [
+            {
+              "rank": 1,
+              "name": "타이니러브 모빌",
+              "image_url": "https://picsum.photos/seed/mobile1/240/240",
+              "coupang": { "price": 24900, "url": "https://www.coupang.com/np/search?q=아기+모빌", "purchase_count": 7800, "review_count": 11200 },
+              "naver": { "price": 23800, "url": "https://search.shopping.naver.com/search/all?query=아기+모빌", "purchase_count": null, "review_count": 9400 }
+            },
+            {
+              "rank": 2,
+              "name": "피셔프라이스 모빌",
+              "image_url": "https://picsum.photos/seed/mobile2/240/240",
+              "coupang": { "price": 45900, "url": "https://www.coupang.com/np/search?q=피셔프라이스+모빌", "purchase_count": 4200, "review_count": 6800 },
+              "naver": { "price": 44200, "url": "https://search.shopping.naver.com/search/all?query=피셔프라이스+모빌", "purchase_count": null, "review_count": 5900 }
+            }
+          ]
+        },
+        {
+          "key": "playmat",
+          "label": "플레이매트",
+          "items": [
+            {
+              "rank": 1,
+              "name": "아기야성장 플레이매트",
+              "image_url": "https://picsum.photos/seed/playmat1/240/240",
+              "coupang": { "price": 45900, "url": "https://www.coupang.com/np/search?q=아기+플레이매트", "purchase_count": 9100, "review_count": 12800 },
+              "naver": { "price": 44200, "url": "https://search.shopping.naver.com/search/all?query=아기+플레이매트", "purchase_count": null, "review_count": 10500 }
+            },
+            {
+              "rank": 2,
+              "name": "뽀로로 플레이매트",
+              "image_url": "https://picsum.photos/seed/playmat2/240/240",
+              "coupang": { "price": 38900, "url": "https://www.coupang.com/np/search?q=뽀로로+플레이매트", "purchase_count": 6500, "review_count": 9200 },
+              "naver": { "price": 37500, "url": "https://search.shopping.naver.com/search/all?query=뽀로로+플레이매트", "purchase_count": null, "review_count": 8100 }
+            }
+          ]
+        },
+        {
+          "key": "cloth_book",
+          "label": "헝겊책",
+          "items": [
+            {
+              "rank": 1,
+              "name": "토들러 헝겊책 세트",
+              "image_url": "https://picsum.photos/seed/clothbook1/240/240",
+              "coupang": { "price": 15900, "url": "https://www.coupang.com/np/search?q=헝겊책+아기", "purchase_count": 6200, "review_count": 8900 },
+              "naver": { "price": 15200, "url": "https://search.shopping.naver.com/search/all?query=헝겊책+아기", "purchase_count": null, "review_count": 7200 }
+            },
+            {
+              "rank": 2,
+              "name": "라벨리 헝겊책",
+              "image_url": "https://picsum.photos/seed/clothbook2/240/240",
+              "coupang": { "price": 18900, "url": "https://www.coupang.com/np/search?q=라벨리+헝겊책", "purchase_count": 3800, "review_count": 5100 },
+              "naver": { "price": 18200, "url": "https://search.shopping.naver.com/search/all?query=라벨리+헝겊책", "purchase_count": null, "review_count": 4400 }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "sleep",
+      "label": "수면",
+      "products": [
+        {
+          "key": "bouncer",
+          "label": "바운서",
+          "items": [
+            {
+              "rank": 1,
+              "name": "베이비뵨 바운서",
+              "image_url": "https://picsum.photos/seed/bouncer1/240/240",
+              "coupang": { "price": 89000, "url": "https://www.coupang.com/np/search?q=베이비뵨+바운서", "purchase_count": 3800, "review_count": 5200 },
+              "naver": { "price": 92000, "url": "https://search.shopping.naver.com/search/all?query=베이비뵨+바운서", "purchase_count": null, "review_count": 4100 }
+            },
+            {
+              "rank": 2,
+              "name": "피셔프라이스 바운서",
+              "image_url": "https://picsum.photos/seed/bouncer2/240/240",
+              "coupang": { "price": 79000, "url": "https://www.coupang.com/np/search?q=피셔프라이스+바운서", "purchase_count": 2900, "review_count": 4600 },
+              "naver": { "price": 80500, "url": "https://search.shopping.naver.com/search/all?query=피셔프라이스+바운서", "purchase_count": null, "review_count": 3900 }
+            }
+          ]
+        },
+        {
+          "key": "humidifier",
+          "label": "가습기",
+          "items": [
+            {
+              "rank": 1,
+              "name": "쿠쿠 아기 가습기",
+              "image_url": "https://picsum.photos/seed/humid1/240/240",
+              "coupang": { "price": 89000, "url": "https://www.coupang.com/np/search?q=아기+가습기", "purchase_count": 4800, "review_count": 6900 },
+              "naver": { "price": 91000, "url": "https://search.shopping.naver.com/search/all?query=아기+가습기", "purchase_count": null, "review_count": 5800 }
+            },
+            {
+              "rank": 2,
+              "name": "크렉스 초음파 가습기",
+              "image_url": "https://picsum.photos/seed/humid2/240/240",
+              "coupang": { "price": 129000, "url": "https://www.coupang.com/np/search?q=크렉스+가습기", "purchase_count": 2100, "review_count": 3400 },
+              "naver": { "price": 125000, "url": "https://search.shopping.naver.com/search/all?query=크렉스+가습기", "purchase_count": null, "review_count": 2900 }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "outdoor",
+      "label": "외출",
+      "products": [
+        {
+          "key": "stroller",
+          "label": "유모차",
+          "items": [
+            {
+              "rank": 1,
+              "name": "다이치 마이카 휴대용",
+              "image_url": "https://picsum.photos/seed/stroller1/240/240",
+              "coupang": { "price": 289000, "url": "https://www.coupang.com/np/search?q=다이치+유모차", "purchase_count": 1800, "review_count": 4200 },
+              "naver": { "price": 295000, "url": "https://search.shopping.naver.com/search/all?query=다이치+유모차", "purchase_count": null, "review_count": 3600 }
+            },
+            {
+              "rank": 2,
+              "name": "부가부 폭스5",
+              "image_url": "https://picsum.photos/seed/stroller2/240/240",
+              "coupang": { "price": 1290000, "url": "https://www.coupang.com/np/search?q=부가부+폭스", "purchase_count": 420, "review_count": 980 },
+              "naver": { "price": 1285000, "url": "https://search.shopping.naver.com/search/all?query=부가부+폭스", "purchase_count": null, "review_count": 850 }
+            }
+          ]
+        },
+        {
+          "key": "carrier",
+          "label": "아기띠",
+          "items": [
+            {
+              "rank": 1,
+              "name": "바이오맘 아기띠",
+              "image_url": "https://picsum.photos/seed/carrier1/240/240",
+              "coupang": { "price": 89000, "url": "https://www.coupang.com/np/search?q=바이오맘+아기띠", "purchase_count": 5200, "review_count": 9800 },
+              "naver": { "price": 86500, "url": "https://search.shopping.naver.com/search/all?query=바이오맘+아기띠", "purchase_count": null, "review_count": 8100 }
+            },
+            {
+              "rank": 2,
+              "name": "에르고베이비 360",
+              "image_url": "https://picsum.photos/seed/carrier2/240/240",
+              "coupang": { "price": 159000, "url": "https://www.coupang.com/np/search?q=에르고베이비+360", "purchase_count": 3100, "review_count": 7200 },
+              "naver": { "price": 155000, "url": "https://search.shopping.naver.com/search/all?query=에르고베이비+360", "purchase_count": null, "review_count": 6400 }
+            }
+          ]
+        },
+        {
+          "key": "diaper_bag",
+          "label": "외출 기저귀가방",
+          "items": [
+            {
+              "rank": 1,
+              "name": "스킵홉 외출 기저귀가방",
+              "image_url": "https://picsum.photos/seed/dbag1/240/240",
+              "coupang": { "price": 89000, "url": "https://www.coupang.com/np/search?q=기저귀가방+외출", "purchase_count": 6800, "review_count": 10200 },
+              "naver": { "price": 86500, "url": "https://search.shopping.naver.com/search/all?query=기저귀가방+외출", "purchase_count": null, "review_count": 8400 }
+            },
+            {
+              "rank": 2,
+              "name": "라비베베 외출가방",
+              "image_url": "https://picsum.photos/seed/dbag2/240/240",
+              "coupang": { "price": 59000, "url": "https://www.coupang.com/np/search?q=라비베베+기저귀가방", "purchase_count": 4200, "review_count": 7100 },
+              "naver": { "price": 57500, "url": "https://search.shopping.naver.com/search/all?query=라비베베+기저귀가방", "purchase_count": null, "review_count": 5800 }
+            }
+          ]
+        },
+        {
+          "key": "portable_changing",
+          "label": "휴대용 갈이패드",
+          "items": [
+            {
+              "rank": 1,
+              "name": "라비베베 휴대용 기저귀패드",
+              "image_url": "https://picsum.photos/seed/pad1/240/240",
+              "coupang": { "price": 24900, "url": "https://www.coupang.com/np/search?q=휴대용+기저귀+갈이패드", "purchase_count": 9200, "review_count": 11800 },
+              "naver": { "price": 23800, "url": "https://search.shopping.naver.com/search/all?query=휴대용+기저귀+갈이패드", "purchase_count": null, "review_count": 9600 }
+            },
+            {
+              "rank": 2,
+              "name": "슈크래빗 외출용 패드",
+              "image_url": "https://picsum.photos/seed/pad2/240/240",
+              "coupang": { "price": 32900, "url": "https://www.coupang.com/np/search?q=외출용+갈이패드", "purchase_count": 5100, "review_count": 7400 },
+              "naver": { "price": 31500, "url": "https://search.shopping.naver.com/search/all?query=외출용+갈이패드", "purchase_count": null, "review_count": 6200 }
+            }
+          ]
+        },
+        {
+          "key": "car_seat",
+          "label": "카시트 (외출)",
+          "items": [
+            {
+              "rank": 1,
+              "name": "다이치 카시트",
+              "image_url": "https://picsum.photos/seed/carseat1/240/240",
+              "coupang": { "price": 189000, "url": "https://www.coupang.com/np/search?q=다이치+카시트", "purchase_count": 3200, "review_count": 5800 },
+              "naver": { "price": 192000, "url": "https://search.shopping.naver.com/search/all?query=다이치+카시트", "purchase_count": null, "review_count": 4900 }
+            },
+            {
+              "rank": 2,
+              "name": "페도라 카시트",
+              "image_url": "https://picsum.photos/seed/carseat2/240/240",
+              "coupang": { "price": 249000, "url": "https://www.coupang.com/np/search?q=페도라+카시트", "purchase_count": 1800, "review_count": 3600 },
+              "naver": { "price": 245000, "url": "https://search.shopping.naver.com/search/all?query=페도라+카시트", "purchase_count": null, "review_count": 3100 }
+            }
+          ]
+        },
+        {
+          "key": "stroller_cover",
+          "label": "외출 유모차 커버",
+          "items": [
+            {
+              "rank": 1,
+              "name": "유모차 방풍·방한 커버",
+              "image_url": "https://picsum.photos/seed/cover1/240/240",
+              "coupang": { "price": 39000, "url": "https://www.coupang.com/np/search?q=유모차+방한+커버", "purchase_count": 6100, "review_count": 8400 },
+              "naver": { "price": 37500, "url": "https://search.shopping.naver.com/search/all?query=유모차+방한+커버", "purchase_count": null, "review_count": 6900 }
+            },
+            {
+              "rank": 2,
+              "name": "유모차 모기장 커버",
+              "image_url": "https://picsum.photos/seed/cover2/240/240",
+              "coupang": { "price": 15900, "url": "https://www.coupang.com/np/search?q=유모차+모기장", "purchase_count": 7800, "review_count": 10200 },
+              "naver": { "price": 15200, "url": "https://search.shopping.naver.com/search/all?query=유모차+모기장", "purchase_count": null, "review_count": 8600 }
+            }
+          ]
+        },
+        {
+          "key": "outdoor_blanket",
+          "label": "외출 담요·블랭킷",
+          "items": [
+            {
+              "rank": 1,
+              "name": "라비베베 외출 블랭킷",
+              "image_url": "https://picsum.photos/seed/blanket1/240/240",
+              "coupang": { "price": 35900, "url": "https://www.coupang.com/np/search?q=아기+외출+담요", "purchase_count": 5400, "review_count": 7200 },
+              "naver": { "price": 34200, "url": "https://search.shopping.naver.com/search/all?query=아기+외출+담요", "purchase_count": null, "review_count": 6100 }
+            },
+            {
+              "rank": 2,
+              "name": "슈크래빗 차량용 담요",
+              "image_url": "https://picsum.photos/seed/blanket2/240/240",
+              "coupang": { "price": 42900, "url": "https://www.coupang.com/np/search?q=아기+차량+담요", "purchase_count": 3100, "review_count": 4800 },
+              "naver": { "price": 41500, "url": "https://search.shopping.naver.com/search/all?query=아기+차량+담요", "purchase_count": null, "review_count": 3900 }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="�D">
+  <defs>
+    <radialGradient id="hair" cx="50%" cy="20%" r="60%">
+      <stop offset="0%" stop-color="#6BB8FF"/>
+      <stop offset="100%" stop-color="#2E6FD9"/>
+    </radialGradient>
+    <radialGradient id="face" cx="38%" cy="38%" r="55%">
+      <stop offset="0%" stop-color="#FFE0C8"/>
+      <stop offset="100%" stop-color="#F0B080"/>
+    </radialGradient>
+  </defs>
+  <ellipse cx="32" cy="58" rx="22" ry="5" fill="#000" opacity="0.12"/>
+  <path d="M14 28 C14 12 50 12 50 28 C50 38 44 44 32 44 C20 44 14 38 14 28 Z" fill="url(#hair)"/>
+  <circle cx="32" cy="38" r="18" fill="url(#face)"/>
+  <ellipse cx="32" cy="26" rx="14" ry="7" fill="#fff" opacity="0.35"/>
+  <circle cx="25" cy="38" r="2.8" fill="#2D3436"/>
+  <circle cx="39" cy="38" r="2.8" fill="#2D3436"/>
+  <circle cx="26" cy="37" r="0.9" fill="#fff"/>
+  <circle cx="40" cy="37" r="0.9" fill="#fff"/>
+  <path d="M27 46 Q32 50 37 46" stroke="#D66" stroke-width="2" fill="none" stroke-linecap="round"/>
+</svg>
