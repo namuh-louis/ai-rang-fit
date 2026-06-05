@@ -44,7 +44,6 @@ function getHomeUiVersion() {
 }
 
 async function loadDashboard() {
-    if (typeof updateHeaderTodayDate === 'function') updateHeaderTodayDate();
     if (getHomeUiVersion() === 'v1' && typeof loadDashboardV1 === 'function') {
         return loadDashboardV1();
     }
