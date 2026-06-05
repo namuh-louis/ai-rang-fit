@@ -209,7 +209,7 @@ function miniBarChart(label, color, values, fmtVal, avgVal, fmtAvg) {
         const isToday = i === values.length - 1;
         const barColor = isToday ? color : color + '99';
         return '<div style="display:flex;flex-direction:column;align-items:center;width:24px;flex-shrink:0;">' +
-            '<div style="font-size:10px;color:' + (isToday ? color : 'transparent') + ';height:14px;line-height:14px;font-weight:600;">' + (item.val > 0 ? fmtVal(item.val) : '') + '</div>' +
+            '<div style="font-size:11px;color:' + (isToday ? color : 'transparent') + ';height:14px;line-height:14px;font-weight:600;">' + (item.val > 0 ? fmtVal(item.val) : '') + '</div>' +
             '<div style="height:' + MAX_H + 'px;display:flex;align-items:flex-end;">' +
             '<div style="width:18px;height:' + h + 'px;background:' + barColor + ';border-radius:4px 4px 0 0;min-height:' + (item.val > 0 ? 3 : 0) + 'px;"></div></div>' +
             '<div style="font-size:11px;color:' + (isToday ? color : 'var(--color-text-secondary)') + ';font-weight:' + (isToday ? '600' : '400') + ';margin-top:3px;">' + item.lbl + '</div>' +
@@ -232,10 +232,10 @@ function weekBarChart(label, color, vals, fmt, avgVal, fmtAvg, compact) {
         const h = Math.max(item.v > 0 ? Math.round((item.v / maxV) * H) : 0, item.v > 0 ? 3 : 0);
         const isLast = i === vals.length - 1;
         return '<div style="display:flex;flex-direction:column;align-items:center;width:' + colW + 'px;flex-shrink:0;max-width:100%;">' +
-            '<div style="font-size:9px;color:' + (isLast ? color : 'transparent') + ';height:12px;line-height:12px;">' + (item.v > 0 ? fmt(item.v) : '') + '</div>' +
+            '<div style="font-size:11px;color:' + (isLast ? color : 'transparent') + ';height:12px;line-height:12px;">' + (item.v > 0 ? fmt(item.v) : '') + '</div>' +
             '<div style="height:' + H + 'px;display:flex;align-items:flex-end;">' +
             '<div style="width:' + barW + 'px;height:' + h + 'px;background:' + color + ';opacity:' + (isLast ? '1' : '0.55') + ';border-radius:4px 4px 0 0;min-height:' + (item.v > 0 ? 3 : 0) + 'px;"></div></div>' +
-            '<div style="font-size:10px;color:' + (isLast ? color : 'var(--color-text-secondary)') + ';font-weight:' + (isLast ? '600' : '400') + ';margin-top:2px;">' + item.l + '</div>' +
+            '<div style="font-size:11px;color:' + (isLast ? color : 'var(--color-text-secondary)') + ';font-weight:' + (isLast ? '600' : '400') + ';margin-top:2px;">' + item.l + '</div>' +
             '</div>';
     }).join('');
     const avgHtml = (avgVal != null && fmtAvg)
@@ -757,7 +757,7 @@ async function renderCombinedHeatmap(babyId) {
         let html = '<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;background:var(--color-border-light,#F3F4F6);border-radius:14px;padding:12px;">';
         // 시간 헤더
         html += '<div style="display:flex;margin-left:'+LABEL_W+'px;margin-bottom:4px;">';
-        [0,3,6,9,12,15,18,21].forEach(h=>html+='<div style="width:'+(CELL+GAP)*3+'px;font-size:9px;color:var(--color-text-tertiary);">'+String(h).padStart(2,'0')+'시</div>');
+        [0,3,6,9,12,15,18,21].forEach(h=>html+='<div style="width:'+(CELL+GAP)*3+'px;font-size:11px;color:var(--color-text-tertiary);">'+String(h).padStart(2,'0')+'시</div>');
         html += '</div>';
         activities.forEach((act,ai)=>{
             const data = results[ai]; if(!data) return;
@@ -765,7 +765,7 @@ async function renderCombinedHeatmap(babyId) {
             html += '<div style="font-size:11px;color:'+act.color+';font-weight:600;margin-bottom:3px;margin-left:2px;">'+act.label+'</div>';
             data.day_labels.forEach((day,wi)=>{
                 html += '<div style="display:flex;align-items:center;margin-bottom:'+GAP+'px;">' +
-                    '<div style="width:'+LABEL_W+'px;font-size:9px;color:var(--color-text-secondary);">'+day+'</div>';
+                    '<div style="width:'+LABEL_W+'px;font-size:11px;color:var(--color-text-secondary);">'+day+'</div>';
                 for(let hi=0;hi<24;hi++){
                     const v=grid[wi][hi],op=v===0?0.06:0.15+(v/maxVal)*0.82;
                     html+='<div title="'+day+' '+hi+'시 '+v+'회" style="width:'+CELL+'px;height:'+CELL+'px;border-radius:2px;background:'+act.color+';opacity:'+op+';margin-right:'+GAP+'px;flex-shrink:0;"></div>';
@@ -814,7 +814,7 @@ async function renderRsMonthly(babyId) {
                 return '<div onclick="showToast(\'' + m + '월 스탬프 ' + (hasStamp ? msInMonth.length + '개\',\'success\')' : '없음\',\'\')')  + '" style="text-align:center;padding:10px 6px;border-radius:12px;background:' + (hasStamp ? 'linear-gradient(135deg,#FF6B9D22,#C45FD022)' : isPast ? 'var(--color-border-light)' : '#F9FAFB') + ';border:1.5px solid ' + (hasStamp ? '#FF6B9D' : 'var(--color-border)') + ';cursor:pointer;">' +
                     '<div style="font-size:20px;">' + (hasStamp ? '⭐' : '🌱') + '</div>' +
                     '<div style="font-size:11px;font-weight:700;margin-top:3px;">' + m + '월</div>' +
-                    (hasStamp ? '<div style="font-size:9px;color:var(--color-primary);">' + msInMonth.length + '개 달성</div>' : '') +
+                    (hasStamp ? '<div style="font-size:11px;color:var(--color-primary);">' + msInMonth.length + '개 달성</div>' : '') +
                     '</div>';
             }).join('') + '</div></div>';
 
@@ -825,10 +825,10 @@ async function renderRsMonthly(babyId) {
         const avgStool = Math.round(recentDays.reduce((a,b) => a+(b.stool_count||0), 0) / Math.max(recentDays.length, 1) * 10) / 10;
         const summaryHtml = '<div class="card" style="margin-bottom:12px;"><div class="card-title" style="margin-bottom:10px;">📈 최근 7일 평균</div>' +
             '<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;">' +
-            '<div style="text-align:center;padding:10px;background:var(--color-primary-light);border-radius:10px;"><div style="font-size:18px;">🍼</div><div style="font-size:16px;font-weight:800;color:var(--color-primary);">' + avgFeeding.toFixed(0) + 'ml</div><div style="font-size:10px;color:var(--color-text-secondary);">일 평균 수유</div></div>' +
-            '<div style="text-align:center;padding:10px;background:#EDE9FE;border-radius:10px;"><div style="font-size:18px;">😴</div><div style="font-size:16px;font-weight:800;color:#7C3AED;">' + avgSleep.toFixed(1) + 'h</div><div style="font-size:10px;color:var(--color-text-secondary);">일 평균 수면</div></div>' +
-            '<div style="text-align:center;padding:10px;background:#E0F2FE;border-radius:10px;"><span data-icon="diaper" data-icon-size="22"></span><div style="font-size:16px;font-weight:800;color:#0369A1;margin-top:4px;">' + avgDiaper + '회</div><div style="font-size:10px;color:var(--color-text-secondary);">일 평균 기저귀</div></div>' +
-            '<div style="text-align:center;padding:10px;background:#FEF3C7;border-radius:10px;"><span data-icon="stool" data-icon-size="22"></span><div style="font-size:16px;font-weight:800;color:#A16207;margin-top:4px;">' + avgStool + '회</div><div style="font-size:10px;color:var(--color-text-secondary);">일 평균 대변</div></div>' +
+            '<div style="text-align:center;padding:10px;background:var(--color-primary-light);border-radius:10px;"><div style="font-size:18px;">🍼</div><div style="font-size:16px;font-weight:800;color:var(--color-primary);">' + avgFeeding.toFixed(0) + 'ml</div><div style="font-size:11px;color:var(--color-text-secondary);">일 평균 수유</div></div>' +
+            '<div style="text-align:center;padding:10px;background:#EDE9FE;border-radius:10px;"><div style="font-size:18px;">😴</div><div style="font-size:16px;font-weight:800;color:#7C3AED;">' + avgSleep.toFixed(1) + 'h</div><div style="font-size:11px;color:var(--color-text-secondary);">일 평균 수면</div></div>' +
+            '<div style="text-align:center;padding:10px;background:#E0F2FE;border-radius:10px;"><span data-icon="diaper" data-icon-size="22"></span><div style="font-size:16px;font-weight:800;color:#0369A1;margin-top:4px;">' + avgDiaper + '회</div><div style="font-size:11px;color:var(--color-text-secondary);">일 평균 기저귀</div></div>' +
+            '<div style="text-align:center;padding:10px;background:#FEF3C7;border-radius:10px;"><span data-icon="stool" data-icon-size="22"></span><div style="font-size:16px;font-weight:800;color:#A16207;margin-top:4px;">' + avgStool + '회</div><div style="font-size:11px;color:var(--color-text-secondary);">일 평균 대변</div></div>' +
             '</div></div>';
 
         const icons = { motor:'🏃', language:'🗣️', social:'😊', cognitive:'🧠' };
@@ -1814,9 +1814,9 @@ async function renderWeeklyChart(babyId, containerId) {
             const [lbl,val] = it;
             const h = Math.max(val>0?Math.round((val/maxV)*72):0, val>0?3:0);
             return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;height:88px;justify-content:flex-end;">'+
-                '<div style="font-size:8px;color:var(--color-text-secondary);height:12px;display:flex;align-items:center;">'+(val>0?fmtLabel(val):'')+'</div>'+
+                '<div style="font-size:11px;color:var(--color-text-secondary);height:14px;display:flex;align-items:center;">'+(val>0?fmtLabel(val):'')+'</div>'+
                 '<div style="width:100%;height:'+h+'px;background:linear-gradient(180deg,'+colorA+','+colorB+');border-radius:4px 4px 0 0;min-height:'+(val>0?3:0)+'px;"></div>'+
-                '<div style="font-size:10px;color:var(--color-text-secondary);font-weight:600;height:14px;display:flex;align-items:center;">'+lbl+'</div></div>';
+                '<div style="font-size:11px;color:var(--color-text-secondary);font-weight:600;height:14px;display:flex;align-items:center;">'+lbl+'</div></div>';
         }).join('');
         const titleHtml = typeof icon === 'string' && icon.indexOf('data-icon') >= 0
             ? '<span class="bar-card-title-3d" style="display:inline-flex;align-items:center;gap:6px;">' + icon + ' <span>' + title + '</span></span>'
@@ -1856,10 +1856,10 @@ async function drawHeatmap2(babyId, type) {
     const clrs = { feeding:'#FF6B9D', sleep:'#A78BFA', bowel:'#34D399' };
     const baseColor = clrs[type] || '#FF6B9D', CELL=12, GAP=2;
     let html = '<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;"><div style="min-width:'+(24*(CELL+GAP)+28)+'px;"><div style="display:flex;margin-left:28px;margin-bottom:3px;">';
-    [0,3,6,9,12,15,18,21].forEach(h => html += '<div style="width:'+(CELL+GAP)*3+'px;font-size:8px;color:var(--color-text-tertiary);">'+String(h).padStart(2,'0')+'시</div>');
+    [0,3,6,9,12,15,18,21].forEach(h => html += '<div style="width:'+(CELL+GAP)*3+'px;font-size:11px;color:var(--color-text-tertiary);">'+String(h).padStart(2,'0')+'시</div>');
     html += '</div>';
     data.day_labels.forEach((day,wi) => {
-        html += '<div style="display:flex;align-items:center;margin-bottom:'+GAP+'px;"><div style="width:24px;font-size:9px;color:var(--color-text-secondary);font-weight:600;">'+day+'</div>';
+        html += '<div style="display:flex;align-items:center;margin-bottom:'+GAP+'px;"><div style="width:24px;font-size:11px;color:var(--color-text-secondary);font-weight:600;">'+day+'</div>';
         for (let hi=0; hi<24; hi++) { const v=grid[wi][hi], op=v===0?0.07:0.15+(v/maxVal)*0.85; html += '<div title="'+day+'요일 '+hi+'시: '+v+'회" style="width:'+CELL+'px;height:'+CELL+'px;border-radius:2px;background:'+baseColor+';opacity:'+op+';margin-right:'+GAP+'px;"></div>'; }
         html += '</div>';
     });
@@ -1947,20 +1947,66 @@ const recordPages = ['record','feeding','sleep','bowel','bowel-log','growth','va
 const memoriesPages = ['album','special-days','family','family-feed','ai-image','credits','memories'];
 const devPages = ['playguides','diet'];
 const finPages = ['insurance','bank-accounts','gift-plan'];
-const shopPages = ['fortune','shopping-guide'];
+
+function getNavTabKey(page) {
+    if (page === 'home') return 'home';
+    if (recordPages.includes(page)) return 'record-stats';
+    if (memoriesPages.includes(page)) return 'memories';
+    if (devPages.includes(page)) return 'playguides';
+    if (finPages.includes(page)) return 'insurance';
+    if (page === 'fortune') return 'fortune';
+    if (page === 'shopping-guide') return 'shopping-guide';
+    return null;
+}
+
+function updateBottomNavActive(page) {
+    var tabKey = getNavTabKey(page);
+    document.querySelectorAll('.nav-item').forEach(function (n) {
+        n.classList.toggle('active', tabKey != null && n.dataset.page === tabKey);
+    });
+    scrollBottomNavIntoView(tabKey);
+}
+
+function scrollBottomNavIntoView(tabKey) {
+    if (!tabKey || tabKey === 'home') return;
+    var track = document.getElementById('nav-scroll-track');
+    if (!track) return;
+    var item = track.querySelector('.nav-item[data-page="' + tabKey + '"]');
+    if (item) item.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+}
+
+function initBottomNavScroll() {
+    var track = document.getElementById('nav-scroll-track');
+    var wrap = document.querySelector('.nav-scroll-wrap');
+    if (!track || !wrap) return;
+    function updateFade() {
+        var canScroll = track.scrollWidth > track.clientWidth + 2;
+        var atEnd = track.scrollLeft >= track.scrollWidth - track.clientWidth - 4;
+        wrap.classList.toggle('nav-scroll-can-scroll', canScroll);
+        wrap.classList.toggle('nav-scroll-at-end', atEnd);
+    }
+    track.addEventListener('scroll', updateFade, { passive: true });
+    window.addEventListener('resize', updateFade);
+    updateFade();
+}
+
+function initTextSize() {
+    var large = localStorage.getItem('text_size') === 'large';
+    document.documentElement.classList.toggle('text-size-large', large);
+    var label = document.getElementById('text-size-label');
+    if (label) label.textContent = large ? '크게' : '보통';
+}
+
+function toggleTextSize() {
+    var large = localStorage.getItem('text_size') !== 'large';
+    localStorage.setItem('text_size', large ? 'large' : 'normal');
+    initTextSize();
+    showToast(large ? '글자 크기: 크게' : '글자 크기: 보통', 'success');
+}
 
 function navigateTo(page, options) {
     options = options || {};
-    document.querySelectorAll('.nav-item').forEach(n => {
-        const p = n.dataset.page;
-        n.classList.remove('active');
-        if (p === page) n.classList.add('active');
-        else if (p === 'record-stats' && recordPages.includes(page)) n.classList.add('active');
-        else if (p === 'memories' && memoriesPages.includes(page)) n.classList.add('active');
-        else if (p === 'playguides' && devPages.includes(page)) n.classList.add('active');
-        else if (p === 'insurance' && finPages.includes(page)) n.classList.add('active');
-        else if (p === 'shopping-guide' && shopPages.includes(page)) n.classList.add('active');
-    });
+    updateBottomNavActive(page);
     const fn = pageMap[page];
     if (fn) {
         if (page === 'insurance' && options.finTab) fn(options.finTab);
@@ -1989,7 +2035,15 @@ document.querySelectorAll('.menu-item').forEach(item => {
         navigateTo(page, finTab ? { finTab: finTab } : undefined);
     });
 });
-document.querySelectorAll('.nav-item').forEach(item => { item.addEventListener('click', () => navigateTo(item.dataset.page)); });
+document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', () => {
+        const page = item.dataset.page;
+        const finTab = item.dataset.finTab;
+        if (!page) return;
+        navigateTo(page, finTab ? { finTab: finTab } : undefined);
+    });
+});
+document.getElementById('btn-text-size')?.addEventListener('click', toggleTextSize);
 
 function showToast(message, type) {
     type = type || '';
@@ -1999,6 +2053,8 @@ function showToast(message, type) {
 }
 
 async function init() {
+    initTextSize();
+    initBottomNavScroll();
     if (typeof initIcons3d === 'function') initIcons3d(document);
     currentUser = await me();
     if (currentUser) { currentBabyId = localStorage.getItem('baby_id') || null; loadDashboard(); }

@@ -263,19 +263,19 @@ async function loadDashboardV2() {
             '<button type="button" class="home-growth-more" onclick="navigateTo(\'record-stats\')">기록·통계 →</button></div>' +
             '<div class="home-live-row home-live-row-4">' +
             '<button type="button" class="home-live-chip" onclick="showFeedingPage()">' +
-            '<span class="home-live-icon" data-icon="feeding" data-icon-size="28"></span><div><div class="home-live-label">수유</div>' +
+            '<span class="home-live-icon" data-icon="feeding" data-icon-size="32"></span><div><div class="home-live-label">수유</div>' +
             '<div class="home-live-value">' + homeFormatElapsed(live.last_feeding_min) + '</div>' +
             '<div class="home-live-sub">오늘 ' + (live.feeding_count || 0) + '회 · ' + (live.feeding_total_ml || 0) + 'ml</div></div></button>' +
             '<button type="button" class="home-live-chip" onclick="navigateTo(\'sleep\')">' +
-            '<span class="home-live-icon" data-icon="sleep" data-icon-size="28"></span><div><div class="home-live-label">수면</div>' +
+            '<span class="home-live-icon" data-icon="sleep" data-icon-size="32"></span><div><div class="home-live-label">수면</div>' +
             '<div class="home-live-value">' + (live.last_sleep_min != null ? homeFormatElapsed(live.last_sleep_min) + ' 기상' : '진행중') + '</div>' +
             '<div class="home-live-sub">오늘 ' + Math.floor((live.sleep_total_min || 0) / 60) + '시간 ' + ((live.sleep_total_min || 0) % 60) + '분</div></div></button>' +
             '<button type="button" class="home-live-chip" onclick="quickBowel(\'' + babyId + '\')">' +
-            '<span class="home-live-icon" data-icon="diaper" data-icon-size="28"></span><div><div class="home-live-label">기저귀</div>' +
+            '<span class="home-live-icon" data-icon="diaper" data-icon-size="32"></span><div><div class="home-live-label">기저귀</div>' +
             '<div class="home-live-value">오늘 ' + (live.diaper_count != null ? live.diaper_count : live.bowel_count || 0) + '회</div>' +
             '<div class="home-live-sub home-live-action">+ 빠른 기록</div></div></button>' +
             '<button type="button" class="home-live-chip" onclick="navigateTo(\'bowel-log\')">' +
-            '<span class="home-live-icon" data-icon="stool" data-icon-size="28"></span><div><div class="home-live-label">대변</div>' +
+            '<span class="home-live-icon" data-icon="stool" data-icon-size="32"></span><div><div class="home-live-label">대변</div>' +
             '<div class="home-live-value">' + (live.last_bowel_min != null ? homeFormatElapsed(live.last_bowel_min) : '--') + '</div>' +
             '<div class="home-live-sub">오늘 ' + (live.stool_count != null ? live.stool_count : 0) + '회 · 상세기록</div></div></button>' +
             '</div></div>' +

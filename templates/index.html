@@ -17,7 +17,7 @@
     <link rel="apple-touch-icon" href="/static/icons/icon-192.png">
     <meta name="msapplication-TileImage" content="/static/icons/icon-192.png">
     <meta name="msapplication-TileColor" content="#FF6B9D">
-    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/style.css?v=20260603v3">
     <link rel="stylesheet" href="/static/css/icons-3d.css">
     <link rel="preconnect" href="https://cdn.jsdelivr.net">
     <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet">
@@ -46,32 +46,42 @@
             </div>
         </main>
 
-        <!-- 하단 네비게이션 (6개) -->
-        <nav class="bottom-nav bottom-nav-6">
-            <button class="nav-item active" data-page="home">
-                <div class="nav-icon-wrap"><span class="nav-icon" data-icon="home" data-icon-size="28"></span></div>
-                <span class="nav-label">홈</span>
-            </button>
-            <button class="nav-item" data-page="record-stats">
-                <div class="nav-icon-wrap"><span class="nav-icon" data-icon="record" data-icon-size="28"></span></div>
-                <span class="nav-label">기록</span>
-            </button>
-            <button class="nav-item" data-page="memories">
-                <div class="nav-icon-wrap"><span class="nav-icon" data-icon="memories" data-icon-size="28"></span></div>
-                <span class="nav-label">추억</span>
-            </button>
-            <button class="nav-item" data-page="playguides">
-                <div class="nav-icon-wrap"><span class="nav-icon" data-icon="play" data-icon-size="28"></span></div>
-                <span class="nav-label">발달</span>
-            </button>
-            <button class="nav-item" data-page="shopping-guide">
-                <div class="nav-icon-wrap"><span class="nav-icon" data-icon="shopping" data-icon-size="28"></span></div>
-                <span class="nav-label">쇼핑</span>
-            </button>
-            <button class="nav-item" data-page="insurance">
-                <div class="nav-icon-wrap"><span class="nav-icon" data-icon="finance" data-icon-size="28"></span></div>
-                <span class="nav-label">금융</span>
-            </button>
+        <!-- 하단 네비: 홈 고정 + 나머지 가로 스크롤 -->
+        <nav class="bottom-nav bottom-nav-scroll" aria-label="주요 메뉴">
+            <div class="nav-home-fixed">
+                <button type="button" class="nav-item nav-item-home active" data-page="home">
+                    <div class="nav-icon-wrap"><span class="nav-icon" data-icon="home" data-icon-size="30"></span></div>
+                    <span class="nav-label">홈</span>
+                </button>
+            </div>
+            <div class="nav-scroll-wrap">
+                <div class="nav-scroll-track" id="nav-scroll-track">
+                    <button type="button" class="nav-item" data-page="record-stats">
+                        <div class="nav-icon-wrap"><span class="nav-icon" data-icon="record" data-icon-size="30"></span></div>
+                        <span class="nav-label">기록</span>
+                    </button>
+                    <button type="button" class="nav-item" data-page="memories">
+                        <div class="nav-icon-wrap"><span class="nav-icon" data-icon="memories" data-icon-size="30"></span></div>
+                        <span class="nav-label">추억</span>
+                    </button>
+                    <button type="button" class="nav-item" data-page="playguides">
+                        <div class="nav-icon-wrap"><span class="nav-icon" data-icon="play" data-icon-size="30"></span></div>
+                        <span class="nav-label">발달</span>
+                    </button>
+                    <button type="button" class="nav-item" data-page="insurance" data-fin-tab="insurance">
+                        <div class="nav-icon-wrap"><span class="nav-icon" data-icon="finance" data-icon-size="30"></span></div>
+                        <span class="nav-label">금융</span>
+                    </button>
+                    <button type="button" class="nav-item" data-page="fortune">
+                        <div class="nav-icon-wrap"><span class="nav-icon" data-icon="fortune" data-icon-size="30"></span></div>
+                        <span class="nav-label">택일·작명</span>
+                    </button>
+                    <button type="button" class="nav-item" data-page="shopping-guide">
+                        <div class="nav-icon-wrap"><span class="nav-icon" data-icon="shopping" data-icon-size="30"></span></div>
+                        <span class="nav-label">쇼핑</span>
+                    </button>
+                </div>
+            </div>
         </nav>
 
         <!-- 사이드 메뉴 -->
@@ -131,6 +141,12 @@
                         <a href="#" class="menu-item" data-page="fortune"><span data-icon="fortune"></span>출산택일 · 작명</a>
                         <a href="#" class="menu-item" data-page="shopping-guide"><span data-icon="shopping"></span>쇼핑 가이드</a>
                     </div>
+                    <div class="menu-section">
+                        <p class="menu-section-title">설정</p>
+                        <button type="button" class="menu-item menu-item-btn" id="btn-text-size">
+                            <span class="menu-item-icon-text" aria-hidden="true">Aa</span>글자 크기 · <strong id="text-size-label">보통</strong>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -142,7 +158,7 @@
     <script src="/static/js/fortune.js"></script>
     <script src="/static/js/shopping-guide.js"></script>
     <script src="/static/js/finance-guide.js?v=20260603"></script>
-    <script src="/static/js/app.js?v=20260603"></script>
+    <script src="/static/js/app.js?v=20260603v3"></script>
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
