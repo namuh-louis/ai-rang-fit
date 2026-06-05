@@ -202,18 +202,26 @@ function formatHeaderAgeLabel(age) {
 /** 상단 고정 헤더 — 오늘 날짜·요일 */
 function updateHeaderTodayDate() {
     const now = new Date();
-    const weekdays = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
+    const weekdaysFull = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
+    const weekdaysShort = ['일', '월', '화', '수', '목', '금', '토'];
     const dateEl = document.getElementById('header-date-text');
     const wdEl = document.getElementById('header-weekday');
     const y = now.getFullYear();
     const m = now.getMonth() + 1;
     const d = now.getDate();
     const iso = now.toISOString().slice(0, 10);
+    const narrow = window.innerWidth < 420;
     if (dateEl) {
-        dateEl.textContent = y + '년 ' + m + '월 ' + d + '일';
+        dateEl.textContent = narrow
+            ? (y + '.' + m + '.' + d)
+            : (y + '년 ' + m + '월 ' + d + '일');
         dateEl.setAttribute('datetime', iso);
     }
-    if (wdEl) wdEl.textContent = weekdays[now.getDay()];
+    if (wdEl) {
+        wdEl.textContent = narrow
+            ? (weekdaysShort[now.getDay()] + '요일')
+            : weekdaysFull[now.getDay()];
+    }
 }
 
 /** 상단 고정 헤더 — 아기 사진·이름·일수·개월 */
@@ -319,5 +327,15 @@ async function loadDashboardV2() {
                 '<button class="btn btn-outline" style="margin-top:16px;" onclick="loadDashboard()">다시 시도</button></div>';
         }
     }
+}
+
+if (typeof window !== 'undefined') {
+    var _headerDateResizeTimer;
+    window.addEventListener('resize', function () {
+        clearTimeout(_headerDateResizeTimer);
+        _headerDateResizeTimer = setTimeout(function () {
+            if (typeof updateHeaderTodayDate === 'function') updateHeaderTodayDate();
+        }, 150);
+    });
 }
 
