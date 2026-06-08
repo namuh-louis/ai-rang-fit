@@ -280,6 +280,8 @@ async function loadDashboardV2() {
             '<div class="home-live-sub">오늘 ' + (live.stool_count != null ? live.stool_count : 0) + '회 · 상세기록</div></div></button>' +
             '</div></div>' +
 
+            '<div id="home-ad-mount" class="home-ad-mount" aria-hidden="true"></div>' +
+
             (data.next_vaccination && data.next_vaccination.name ?
                 '<div class="home-schedule-card" onclick="navigateTo(\'vaccination\')">' +
                 '<span data-icon="vaccine" data-icon-size="36"></span><div><div class="home-schedule-title">다음 예방접종</div>' +
@@ -293,6 +295,7 @@ async function loadDashboardV2() {
             '</div>';
         enhanceIcons3d(main);
         initHomeIssuesMarquee(main);
+        if (typeof loadHomeAdCarousel === 'function') loadHomeAdCarousel(babyId);
     } catch (e) {
         if (main) {
             main.innerHTML = '<div style="text-align:center;padding:60px 20px;color:var(--color-text-secondary);">' +

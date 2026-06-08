@@ -490,6 +490,19 @@ class FortuneReport(Base):
     created_at = Column(DateTime, default=datetime.datetime.now)
 
 
+class AffiliateClick(Base):
+    """제휴(파트너스) 클릭 로그"""
+    __tablename__ = "affiliate_clicks"
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    user_id = Column(String(36), nullable=False, index=True)
+    baby_id = Column(String(36), nullable=True)
+    product_key = Column(String(120), nullable=False)
+    platform = Column(String(20), nullable=False)  # coupang, naver
+    slot = Column(String(20), nullable=False)  # home, shop
+    baby_months = Column(Integer, nullable=True)
+    created_at = Column(DateTime, default=datetime.datetime.now)
+
+
 class ShoppingOffer(Base):
     """M4: 월령별 쇼핑가이드 — 플랫폼별 오퍼"""
     __tablename__ = "shopping_offers"
@@ -683,6 +696,13 @@ class FortuneNamingIn(BaseModel):
     use_legal_hanja_only: bool = True  # 인명용 한자 위주
 
 
+class AffiliateClickIn(BaseModel):
+    product_key: str
+    platform: str = "coupang"
+    slot: str = "shop"
+    baby_id: Optional[str] = None
+
+
 class ParentProfilesUpdate(BaseModel):
     parents: list[ParentProfileIn]
 
@@ -692,7 +712,9 @@ class ParentProfilesUpdate(BaseModel):
 # ---------------------------------------------------------------------------
 
 SHOPPING_GUIDE_PATH = GUIDE_DATA_DIR / "shopping_guide.json"
+HOME_ADS_PATH = GUIDE_DATA_DIR / "home_ads.json"
 FINANCE_GUIDE_PATH = GUIDE_DATA_DIR / "finance_guide.json"
+COUPANG_PARTNERS_AF_ID = os.getenv("COUPANG_PARTNERS_AF_ID", "")
 FORTUNE_DAILY_LIMIT = 3
 
 
@@ -701,6 +723,136 @@ def _load_shopping_guide() -> dict:
         return {"months": [], "disclaimer": "", "updated_at": None}
     with open(SHOPPING_GUIDE_PATH, encoding="utf-8") as f:
         return json.load(f)
+
+
+def _load_home_ads_config() -> dict:
+    if not HOME_ADS_PATH.exists():
+        return {}
+    with open(HOME_ADS_PATH, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def _product_key(keyword: str, category_key: str, rank: int) -> str:
+    return f"{keyword}:{category_key}:{rank}"
+
+
+def _parse_product_key(product_key: str) -> Optional[dict]:
+    parts = product_key.split(":")
+    if len(parts) != 3:
+        return None
+    try:
+        return {"keyword": parts[0], "category_key": parts[1], "rank": int(parts[2])}
+    except ValueError:
+        return None
+
+
+def _find_shopping_item(guide: dict, keyword: str, category_key: str, rank: int) -> Optional[dict]:
+    kw_data = next((k for k in guide.get("keywords", []) if k["key"] == keyword), None)
+    if not kw_data:
+        return None
+    prod = next((p for p in kw_data.get("products", []) if p.get("key") == category_key), None)
+    if not prod:
+        return None
+    item = next((i for i in prod.get("items", []) if i.get("rank") == rank), None)
+    if not item:
+        return None
+    return {
+        "keyword": keyword,
+        "keyword_label": kw_data.get("label", keyword),
+        "category_key": category_key,
+        "category_label": prod.get("label", category_key),
+        "item": item,
+    }
+
+
+def _affiliate_sub_id(user_id: str, slot: str) -> str:
+    short = user_id.replace("-", "")[:8]
+    return f"{short}:{slot}:{datetime.date.today():%Y%m%d}"
+
+
+def _build_affiliate_redirect_url(platform: str, offer: dict, sub_id: str) -> str:
+    """파트너스 딥링크 생성. AF ID 없으면 원본 URL."""
+    from urllib.parse import quote
+
+    landing = offer.get("url") or ""
+    affiliate = offer.get("affiliate") or {}
+    if affiliate.get("landing_url"):
+        landing = affiliate["landing_url"]
+    if not landing:
+        return ""
+
+    if platform == "coupang" and COUPANG_PARTNERS_AF_ID:
+        return (
+            f"https://link.coupang.com/a/{COUPANG_PARTNERS_AF_ID}"
+            f"?subId={quote(sub_id)}&landingUrl={quote(landing, safe='')}"
+        )
+    if platform == "naver":
+        naver_id = os.getenv("NAVER_SHOPPING_CONNECT_ID", "")
+        if naver_id and affiliate.get("landing_url"):
+            return affiliate["landing_url"]
+    return landing
+
+
+def _month_shopping_keyword(total_months: int, config: dict) -> tuple:
+    """(keyword, age_label)"""
+    for row in config.get("month_keywords", []):
+        if total_months <= row.get("max_months", 999):
+            return row.get("keyword", "basic"), row.get("age_label", "")
+    return "basic", ""
+
+
+def _build_home_ad_items(guide: dict, config: dict, total_months: int) -> list:
+    keyword, age_label = _month_shopping_keyword(total_months, config)
+    categories = (config.get("category_priority") or {}).get(keyword, ["diapers", "wipes"])
+    max_items = config.get("max_items", 5)
+    items = []
+
+    for cat_key in categories:
+        if len(items) >= max_items:
+            break
+        found = _find_shopping_item(guide, keyword, cat_key, 1)
+        if not found:
+            continue
+        item = found["item"]
+        platform = "coupang"
+        offer = item.get(platform) or {}
+        if not offer.get("url") and not (offer.get("affiliate") or {}).get("landing_url"):
+            continue
+        pk = _product_key(keyword, cat_key, 1)
+        title_parts = []
+        if age_label:
+            title_parts.append(age_label)
+        if found["category_label"]:
+            title_parts.append(found["category_label"])
+        items.append({
+            "id": f"{pk}:{platform}",
+            "type": "shopping",
+            "product_key": pk,
+            "platform": platform,
+            "badge": "추천",
+            "title": " · ".join(title_parts) if title_parts else found["category_label"],
+            "subtitle": item.get("name", ""),
+            "price": offer.get("price"),
+            "price_label": f"{offer['price']:,}원" if offer.get("price") else "",
+            "image_url": item.get("image_url"),
+            "cta": "쿠팡에서 보기" if platform == "coupang" else "네이버에서 보기",
+        })
+
+    for promo in config.get("promo_banners", []):
+        if len(items) >= max_items + 1:
+            break
+        items.append({
+            "id": promo.get("id", "promo"),
+            "type": "promo",
+            "badge": promo.get("badge", "안내"),
+            "title": promo.get("title", ""),
+            "subtitle": promo.get("subtitle", ""),
+            "cta": promo.get("cta", "보기"),
+            "action": promo.get("action", "navigate"),
+            "page": promo.get("page", "shopping-guide"),
+        })
+
+    return items
 
 
 def _fortune_reports_today(db: Session, user_id: str) -> int:
@@ -1799,15 +1951,23 @@ async def post_activity(data: dict, family_code: str, user: User = Depends(get_c
 # 라우터 — 커머스 · 쇼핑가이드 (M4)
 # ---------------------------------------------------------------------------
 
-def _shopping_top2_products(products: list) -> list:
-    """상품군별 1·2위만 반환"""
+def _shopping_top2_products(products: list, keyword: str = "") -> list:
+    """상품군별 1·2위만 반환 (product_key 포함)"""
     out = []
+    cat_key = ""
     for prod in products:
+        cat_key = prod.get("key", "")
         items = sorted(prod.get("items", []), key=lambda x: x.get("rank", 99))[:2]
+        enriched = []
+        for item in items:
+            row = dict(item)
+            if keyword and cat_key:
+                row["product_key"] = _product_key(keyword, cat_key, item.get("rank", 1))
+            enriched.append(row)
         out.append({
-            "key": prod.get("key"),
+            "key": cat_key,
             "label": prod.get("label"),
-            "items": items,
+            "items": enriched,
         })
     return out
 
@@ -1858,9 +2018,82 @@ async def shopping_guide(keyword: str = "basic", month: str = None, user: User =
     return {
         "keyword": kw_data["key"],
         "label": kw_data["label"],
-        "products": _shopping_top2_products(kw_data.get("products", [])),
+        "products": _shopping_top2_products(kw_data.get("products", []), keyword=kw_data["key"]),
         "updated_at": guide.get("updated_at"),
         "disclaimer": guide.get("disclaimer"),
+        "affiliate_disclosure": guide.get("affiliate_disclosure"),
+    }
+
+
+@app.get("/api/home/ads")
+async def home_ads(baby_id: str = None, user: User = Depends(get_current_user)):
+    """홈 롤링 배너 슬롯 (월령 맞춤 쇼핑 + 프로모)"""
+    config = _load_home_ads_config()
+    guide = _load_shopping_guide()
+    total_months = 0
+    if baby_id:
+        db = get_current_db()
+        baby = db.query(Baby).filter(Baby.id == baby_id, Baby.user_id == user.id).first()
+        db.close()
+        if baby:
+            total_months = calc_age(baby.birthdate)["total_months"]
+    items = _build_home_ad_items(guide, config, total_months)
+    disclosure = config.get("disclosure") or guide.get("affiliate_disclosure") or (
+        "파트너스 · 수수료가 지급될 수 있습니다"
+    )
+    return {
+        "rotation_sec": config.get("rotation_sec", 5),
+        "disclosure": disclosure,
+        "baby_months": total_months,
+        "items": items,
+    }
+
+
+@app.post("/api/affiliate/click")
+async def affiliate_click(body: AffiliateClickIn, user: User = Depends(get_current_user)):
+    """제휴 클릭 로그 + 리다이렉트 URL"""
+    parsed = _parse_product_key(body.product_key)
+    if not parsed:
+        raise HTTPException(status_code=400, detail="잘못된 product_key")
+
+    guide = _load_shopping_guide()
+    found = _find_shopping_item(
+        guide, parsed["keyword"], parsed["category_key"], parsed["rank"]
+    )
+    if not found:
+        raise HTTPException(status_code=404, detail="상품을 찾을 수 없습니다")
+
+    platform = body.platform if body.platform in ("coupang", "naver") else "coupang"
+    offer = found["item"].get(platform) or {}
+    sub_id = _affiliate_sub_id(user.id, body.slot)
+    redirect_url = _build_affiliate_redirect_url(platform, offer, sub_id)
+    if not redirect_url:
+        raise HTTPException(status_code=404, detail="제휴 링크가 없습니다")
+
+    baby_months = None
+    db = get_current_db()
+    if body.baby_id:
+        baby = db.query(Baby).filter(Baby.id == body.baby_id, Baby.user_id == user.id).first()
+        if baby:
+            baby_months = calc_age(baby.birthdate)["total_months"]
+
+    click_id = str(uuid.uuid4())
+    db.add(AffiliateClick(
+        id=click_id,
+        user_id=user.id,
+        baby_id=body.baby_id,
+        product_key=body.product_key,
+        platform=platform,
+        slot=body.slot,
+        baby_months=baby_months,
+    ))
+    db.commit()
+    db.close()
+
+    return {
+        "click_id": click_id,
+        "redirect_url": redirect_url,
+        "disclosure": guide.get("affiliate_disclosure"),
     }
 
 

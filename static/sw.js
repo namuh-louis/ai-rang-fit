@@ -1,9 +1,11 @@
-const CACHE_NAME = 'ourapp-v3-m9';
+const CACHE_NAME = 'ourapp-v3-m10';
 const STATIC_ASSETS = [
   '/',
   '/static/css/style.css',
   '/static/css/icons-3d.css',
   '/static/js/icons-3d.js',
+  '/static/js/affiliate.js',
+  '/static/js/home-ads.js',
   '/static/js/fortune.js',
   '/static/js/shopping-guide.js',
   '/static/js/finance-guide.js',

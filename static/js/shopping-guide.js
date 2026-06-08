@@ -27,7 +27,7 @@ function showShoppingGuidePage() {
         '<p class="shop-disclaimer" id="shop-disclaimer">가격은 갱신 시점 기준이며 실제와 다를 수 있습니다.</p>' +
         '<div class="shop-keyword-chips" id="shop-keyword-chips"></div>' +
         '<div id="shop-content"><div class="loading"><div class="spinner"></div></div></div>' +
-        '<p class="shop-footer-note">쿠팡·네이버에서 최종 가격·리뷰를 확인하세요.</p>' +
+        '<p class="shop-footer-note" id="shop-affiliate-note">쿠팡·네이버에서 최종 가격·리뷰를 확인하세요.</p>' +
         '</div>';
     loadShoppingKeywords();
 }
@@ -74,6 +74,8 @@ async function loadShoppingGuide(keyword) {
         const res = await fetch(API + '/api/shopping-guide?keyword=' + encodeURIComponent(keyword), { headers: authHeaders() });
         if (!res.ok) throw new Error('not found');
         const data = await res.json();
+        const note = document.getElementById('shop-affiliate-note');
+        if (note && data.affiliate_disclosure) note.textContent = data.affiliate_disclosure;
         c.innerHTML = renderShoppingProducts(data.products || [], data.label);
     } catch (e) {
         c.innerHTML = '<p class="shop-error">이 키워드 데이터가 없습니다.</p>';
@@ -105,11 +107,13 @@ function renderProductStats(platform, offer, label) {
         '</div>';
 }
 
-function renderPlatformCell(platformClass, label, offer) {
+function renderPlatformCell(platformClass, label, offer, productKey, platformKey) {
     const o = offer || {};
-    const link = o.url
-        ? '<a href="' + escapeHtml(o.url) + '" target="_blank" rel="noopener noreferrer" class="shop-prod-stat-link">보기</a>'
-        : '';
+    const link = productKey
+        ? affiliateShopLink(productKey, platformKey, '보기')
+        : (o.url
+            ? '<a href="' + escapeHtml(o.url) + '" target="_blank" rel="noopener noreferrer" class="shop-prod-stat-link">보기</a>'
+            : '');
     return '<div class="shop-prod-stat-cell ' + platformClass + '">' +
         '<span class="shop-prod-stat-label">' + label + '</span>' +
         '<span class="shop-prod-stat-price">' + formatPrice(o.price) + '</span>' +
@@ -122,13 +126,14 @@ function renderPlatformCell(platformClass, label, offer) {
 function renderProductCard(item) {
     const cp = item.coupang || {};
     const np = item.naver || {};
+    const pk = item.product_key || '';
     return '<article class="shop-prod-card">' +
         '<div class="shop-prod-rank">' + item.rank + '위</div>' +
         renderProductImage(item) +
         '<h4 class="shop-prod-name">' + escapeHtml(item.name) + '</h4>' +
         '<div class="shop-prod-stats shop-prod-stats-row">' +
-        renderPlatformCell('shop-prod-stat-coupang', '쿠팡', cp) +
-        renderPlatformCell('shop-prod-stat-naver', '네이버', np) +
+        renderPlatformCell('shop-prod-stat-coupang', '쿠팡', cp, pk, 'coupang') +
+        renderPlatformCell('shop-prod-stat-naver', '네이버', np, pk, 'naver') +
         '</div></article>';
 }
 
