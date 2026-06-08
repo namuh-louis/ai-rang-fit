@@ -7,6 +7,7 @@ import os
 import sys
 import json
 import math
+import random
 import uuid
 import hashlib
 import secrets
@@ -215,7 +216,8 @@ class Photo(Base):
     thumbnail_path = Column(String(255), nullable=True)
     caption = Column(Text, nullable=True)
     month_age = Column(Integer, nullable=True)  # 계산된 개월수
-    date = Column(DateTime, nullable=False)
+    date = Column(DateTime, nullable=False)  # 표시·정렬용 (촬영일과 동기화)
+    taken_date = Column(DateTime, nullable=True)  # 실제 촬영일 (업로드일과 다를 수 있음)
     tags = Column(Text, nullable=True)  # JSON 배열
     liked = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.datetime.now)
@@ -540,6 +542,11 @@ def _migrate_sqlite_columns():
         cols = {row[1] for row in cur.fetchall()}
         if cols and "name_hanja" not in cols:
             cur.execute("ALTER TABLE parent_profiles ADD COLUMN name_hanja VARCHAR(80)")
+        cur.execute("PRAGMA table_info(photos)")
+        photo_cols = {row[1] for row in cur.fetchall()}
+        if photo_cols and "taken_date" not in photo_cols:
+            cur.execute("ALTER TABLE photos ADD COLUMN taken_date DATETIME")
+            cur.execute("UPDATE photos SET taken_date = date WHERE taken_date IS NULL")
         conn.commit()
         conn.close()
     except Exception:
@@ -703,6 +710,11 @@ class AffiliateClickIn(BaseModel):
     baby_id: Optional[str] = None
 
 
+class PhotoUpdateIn(BaseModel):
+    taken_date: Optional[str] = None  # YYYY-MM-DD
+    caption: Optional[str] = None
+
+
 class ParentProfilesUpdate(BaseModel):
     parents: list[ParentProfileIn]
 
@@ -801,57 +813,76 @@ def _month_shopping_keyword(total_months: int, config: dict) -> tuple:
     return "basic", ""
 
 
+def _shopping_ad_candidate(
+    keyword: str, age_label: str, cat_key: str, cat_label: str, rank: int, item: dict,
+) -> Optional[dict]:
+    platform = "coupang"
+    offer = item.get(platform) or {}
+    if not offer.get("url") and not (offer.get("affiliate") or {}).get("landing_url"):
+        return None
+    pk = _product_key(keyword, cat_key, rank)
+    title_parts = [p for p in (age_label, cat_label) if p]
+    return {
+        "id": f"{pk}:{platform}",
+        "type": "shopping",
+        "product_key": pk,
+        "platform": platform,
+        "badge": "추천",
+        "title": " · ".join(title_parts) if title_parts else cat_label,
+        "subtitle": item.get("name", ""),
+        "price": offer.get("price"),
+        "price_label": f"{offer['price']:,}원" if offer.get("price") else "",
+        "image_url": item.get("image_url"),
+        "cta": "쿠팡에서 보기",
+    }
+
+
+def _collect_home_ad_candidates(guide: dict, keyword: str, age_label: str) -> list:
+    """키워드 내 전 상품군·순위 후보 수집 (중복 product_key 제외)"""
+    kw_data = next((k for k in guide.get("keywords", []) if k["key"] == keyword), None)
+    if not kw_data:
+        return []
+    seen = set()
+    candidates = []
+    for prod in kw_data.get("products", []):
+        cat_key = prod.get("key", "")
+        cat_label = prod.get("label", cat_key)
+        for item in sorted(prod.get("items", []), key=lambda x: x.get("rank", 99)):
+            rank = item.get("rank", 1)
+            pk = _product_key(keyword, cat_key, rank)
+            if pk in seen:
+                continue
+            row = _shopping_ad_candidate(keyword, age_label, cat_key, cat_label, rank, item)
+            if row:
+                seen.add(pk)
+                candidates.append(row)
+    return candidates
+
+
 def _build_home_ad_items(guide: dict, config: dict, total_months: int) -> list:
+    """홈 롤링 배너 5개 — 월령 키워드 풀에서 무작위 추출·셔플"""
     keyword, age_label = _month_shopping_keyword(total_months, config)
-    categories = (config.get("category_priority") or {}).get(keyword, ["diapers", "wipes"])
-    max_items = config.get("max_items", 5)
-    items = []
+    max_items = min(config.get("max_items", 5), 5)
+    candidates = _collect_home_ad_candidates(guide, keyword, age_label)
 
-    for cat_key in categories:
-        if len(items) >= max_items:
-            break
-        found = _find_shopping_item(guide, keyword, cat_key, 1)
-        if not found:
-            continue
-        item = found["item"]
-        platform = "coupang"
-        offer = item.get(platform) or {}
-        if not offer.get("url") and not (offer.get("affiliate") or {}).get("landing_url"):
-            continue
-        pk = _product_key(keyword, cat_key, 1)
-        title_parts = []
-        if age_label:
-            title_parts.append(age_label)
-        if found["category_label"]:
-            title_parts.append(found["category_label"])
-        items.append({
-            "id": f"{pk}:{platform}",
-            "type": "shopping",
-            "product_key": pk,
-            "platform": platform,
-            "badge": "추천",
-            "title": " · ".join(title_parts) if title_parts else found["category_label"],
-            "subtitle": item.get("name", ""),
-            "price": offer.get("price"),
-            "price_label": f"{offer['price']:,}원" if offer.get("price") else "",
-            "image_url": item.get("image_url"),
-            "cta": "쿠팡에서 보기" if platform == "coupang" else "네이버에서 보기",
-        })
+    if len(candidates) < max_items:
+        seen = {c["product_key"] for c in candidates}
+        for fallback_kw in ("basic", "feeding", "play", "outdoor"):
+            if fallback_kw == keyword:
+                continue
+            for row in _collect_home_ad_candidates(guide, fallback_kw, age_label):
+                if row["product_key"] not in seen:
+                    seen.add(row["product_key"])
+                    candidates.append(row)
+            if len(candidates) >= max_items:
+                break
 
-    for promo in config.get("promo_banners", []):
-        if len(items) >= max_items + 1:
-            break
-        items.append({
-            "id": promo.get("id", "promo"),
-            "type": "promo",
-            "badge": promo.get("badge", "안내"),
-            "title": promo.get("title", ""),
-            "subtitle": promo.get("subtitle", ""),
-            "cta": promo.get("cta", "보기"),
-            "action": promo.get("action", "navigate"),
-            "page": promo.get("page", "shopping-guide"),
-        })
+    if not candidates:
+        return []
 
+    count = min(max_items, len(candidates))
+    items = random.sample(candidates, count)
+    random.shuffle(items)
     return items
 
 
@@ -935,13 +966,13 @@ app.mount("/static", StaticFiles(directory=str(BASE_DIR / "static")), name="stat
 app.mount("/media", StaticFiles(directory=str(DATA_DIR)), name="media")
 
 
-def _baby_photo_url(profile_photo: Optional[str]) -> Optional[str]:
-    """아기 프로필 사진 URL (data/ 하위 경로)"""
-    if not profile_photo:
+def _media_url(file_path: Optional[str]) -> Optional[str]:
+    """업로드 파일 → /media/... URL"""
+    if not file_path:
         return None
-    p = Path(profile_photo)
+    p = Path(file_path)
     if not p.is_absolute():
-        p = DATA_DIR / profile_photo
+        p = DATA_DIR / file_path
     if not p.exists():
         return None
     try:
@@ -949,6 +980,44 @@ def _baby_photo_url(profile_photo: Optional[str]) -> Optional[str]:
         return f"/media/{rel.as_posix()}"
     except ValueError:
         return None
+
+
+def _baby_photo_url(profile_photo: Optional[str]) -> Optional[str]:
+    """아기 프로필 사진 URL (data/ 하위 경로)"""
+    return _media_url(profile_photo)
+
+
+def _calc_day_label(birthdate: datetime.datetime, taken: datetime.datetime) -> str:
+    """태어난 날 기준 D+N 라벨"""
+    if not birthdate or not taken:
+        return ""
+    bd = birthdate.date() if isinstance(birthdate, datetime.datetime) else birthdate
+    td = taken.date() if isinstance(taken, datetime.datetime) else taken
+    days = (td - bd).days
+    if days < 0:
+        return f"D{days}"
+    return f"D+{days}"
+
+
+def _photo_taken_dt(photo: Photo) -> datetime.datetime:
+    return photo.taken_date or photo.date
+
+
+def _photo_to_dict(photo: Photo, baby: Optional[Baby]) -> dict:
+    taken = _photo_taken_dt(photo)
+    birth = baby.birthdate if baby else None
+    return {
+        "id": photo.id,
+        "thumbnail_url": _media_url(photo.thumbnail_path),
+        "file_url": _media_url(photo.file_path),
+        "caption": photo.caption,
+        "taken_date": taken.isoformat() if taken else None,
+        "uploaded_at": photo.created_at.isoformat() if photo.created_at else None,
+        "date": photo.date.isoformat(),
+        "day_label": _calc_day_label(birth, taken) if birth and taken else "",
+        "month_age": photo.month_age,
+        "liked": photo.liked,
+    }
 
 # 시크릿 키
 SECRET_KEY = secrets.token_hex(32)
@@ -1828,6 +1897,7 @@ async def upload_photo(
     album_id: str = Form(None),
     baby_id: str = Form(...),
     caption: str = Form(""),
+    taken_date: str = Form(None),
     user: User = Depends(get_current_user),
     file: UploadFile = File(...),
 ):
@@ -1840,9 +1910,20 @@ async def upload_photo(
     #썸네일 생성 (간단하게 복사)
     thumb_path.write_bytes(content[:min(10000, len(content))])
 
+    now = datetime.datetime.now()
+    taken_dt = now
+    if taken_date:
+        try:
+            taken_dt = datetime.datetime.strptime(taken_date[:10], "%Y-%m-%d")
+        except ValueError:
+            taken_dt = now
+
     db = get_current_db()
     baby = db.query(Baby).filter(Baby.id == baby_id).first()
-    age = calc_age(baby.birthdate) if baby else {"total_months": 0}
+    month_age = 0
+    if baby:
+        days = (taken_dt.date() - baby.birthdate.date()).days
+        month_age = max(0, days // 30)
     p = Photo(
         album_id=album_id,
         baby_id=baby_id,
@@ -1850,8 +1931,9 @@ async def upload_photo(
         file_path=str(path),
         thumbnail_path=str(thumb_path),
         caption=caption,
-        month_age=age.get("total_months", 0),
-        date=datetime.datetime.now(),
+        month_age=month_age,
+        date=taken_dt,
+        taken_date=taken_dt,
         tags=json.dumps(["baby", "photo"]),
     )
     db.add(p)
@@ -1863,10 +1945,40 @@ async def upload_photo(
 @app.get("/api/photos/{baby_id}")
 async def get_photos(baby_id: str, user: User = Depends(get_current_user)):
     db = get_current_db()
-    photos = db.query(Photo).filter(Photo.baby_id == baby_id, Photo.user_id == user.id).order_by(Photo.date.desc()).all()
+    baby = db.query(Baby).filter(Baby.id == baby_id).first()
+    photos = db.query(Photo).filter(
+        Photo.baby_id == baby_id, Photo.user_id == user.id
+    ).order_by(Photo.date.desc()).all()
+    out = [_photo_to_dict(p, baby) for p in photos]
     db.close()
-    return [{"id": p.id, "thumbnail_path": p.thumbnail_path, "caption": p.caption,
-             "date": p.date.isoformat(), "month_age": p.month_age} for p in photos]
+    return out
+
+
+@app.patch("/api/photos/{photo_id}")
+async def update_photo(photo_id: str, body: PhotoUpdateIn, user: User = Depends(get_current_user)):
+    db = get_current_db()
+    p = db.query(Photo).filter(Photo.id == photo_id, Photo.user_id == user.id).first()
+    if not p:
+        db.close()
+        raise HTTPException(status_code=404, detail="사진을 찾을 수 없습니다")
+    baby = db.query(Baby).filter(Baby.id == p.baby_id).first()
+    if body.taken_date is not None:
+        try:
+            taken_dt = datetime.datetime.strptime(body.taken_date[:10], "%Y-%m-%d")
+            p.taken_date = taken_dt
+            p.date = taken_dt
+            if baby:
+                days = (taken_dt.date() - baby.birthdate.date()).days
+                p.month_age = max(0, days // 30)
+        except ValueError:
+            db.close()
+            raise HTTPException(status_code=400, detail="날짜 형식은 YYYY-MM-DD 입니다")
+    if body.caption is not None:
+        p.caption = body.caption
+    db.commit()
+    result = _photo_to_dict(p, baby)
+    db.close()
+    return result
 
 
 @app.post("/api/photos/{photo_id}/like")
@@ -1883,6 +1995,63 @@ async def like_photo(photo_id: str, user: User = Depends(get_current_user)):
 # ---------------------------------------------------------------------------
 # 라우터 — 가족 공유 (M3)
 # ---------------------------------------------------------------------------
+
+@app.get("/api/family/code")
+async def get_family_code(baby_id: str, user: User = Depends(get_current_user)):
+    """가족 초대 코드 조회"""
+    db = get_current_db()
+    row = db.query(FamilyMember).filter(
+        FamilyMember.baby_id == baby_id,
+        FamilyMember.user_id == user.id,
+    ).first()
+    if not row:
+        row = db.query(FamilyMember).filter(FamilyMember.baby_id == baby_id).first()
+    members = db.query(FamilyMember).filter(FamilyMember.baby_id == baby_id).all() if baby_id else []
+    db.close()
+    return {
+        "family_code": row.family_code if row else None,
+        "member_count": len(members),
+    }
+
+
+@app.post("/api/family/code")
+async def ensure_family_code(baby_id: str, user: User = Depends(get_current_user)):
+    """초대 코드 없으면 생성"""
+    db = get_current_db()
+    row = db.query(FamilyMember).filter(
+        FamilyMember.baby_id == baby_id,
+        FamilyMember.user_id == user.id,
+    ).first()
+    if row:
+        code = row.family_code
+    else:
+        existing = db.query(FamilyMember).filter(FamilyMember.baby_id == baby_id).first()
+        if existing:
+            code = existing.family_code
+            fam = FamilyMember(
+                family_code=code,
+                user_id=user.id,
+                baby_id=baby_id,
+                name=user.name,
+                relationship="보호자",
+                role="admin",
+            )
+            db.add(fam)
+        else:
+            code = "BABY-" + secrets.token_hex(3).upper()[:4]
+            fam = FamilyMember(
+                family_code=code,
+                user_id=user.id,
+                baby_id=baby_id,
+                name=user.name,
+                relationship="보호자",
+                role="admin",
+            )
+            db.add(fam)
+        db.commit()
+    db.close()
+    return {"family_code": code, "invite_url": f"https://ai-rang-fit.vercel.app/?invite={code}"}
+
 
 @app.post("/api/family/invite")
 async def invite_family(data: FamilyInvite, baby_id: str, user: User = Depends(get_current_user)):

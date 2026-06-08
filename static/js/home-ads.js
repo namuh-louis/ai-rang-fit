@@ -86,9 +86,20 @@ function initHomeAdCarousel(root) {
         });
     }
 
+    function pickRandomNext() {
+        if (total <= 1) return 0;
+        var next = idx;
+        var guard = 0;
+        while (next === idx && guard < 8) {
+            next = Math.floor(Math.random() * total);
+            guard++;
+        }
+        return next;
+    }
+
     function startAuto() {
         stopAuto();
-        timer = setInterval(function () { goTo(idx + 1); }, sec * 1000);
+        timer = setInterval(function () { goTo(pickRandomNext()); }, sec * 1000);
     }
 
     function stopAuto() {
@@ -115,7 +126,7 @@ function initHomeAdCarousel(root) {
         }
     });
 
-    goTo(0);
+    goTo(total > 1 ? Math.floor(Math.random() * total) : 0);
     startAuto();
 }
 

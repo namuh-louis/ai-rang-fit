@@ -2,6 +2,7 @@
   "disclosure": "이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.",
   "rotation_sec": 5,
   "max_items": 5,
+  "random_pick": true,
   "month_keywords": [
     { "max_months": 2, "keyword": "basic", "age_label": "신생아" },
     { "max_months": 5, "keyword": "basic", "age_label": "영아" },
@@ -18,16 +19,5 @@
     "sleep": ["humidifier", "bouncer"],
     "outdoor": ["stroller", "carrier", "diaper_bag"]
   },
-  "promo_banners": [
-    {
-      "type": "promo",
-      "id": "promo-shopping-hub",
-      "badge": "가이드",
-      "title": "월령별 쇼핑 TOP3",
-      "subtitle": "기저귀·수유·외출용품 한눈에 비교",
-      "cta": "쇼핑 가이드 보기",
-      "action": "navigate",
-      "page": "shopping-guide"
-    }
-  ]
+  "promo_banners": []
 }

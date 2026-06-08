@@ -1207,34 +1207,64 @@ function _setActiveMemCard(idx) {
 // ── 1. 가족 공유 (FamilyAlbum 스타일) ─────────────────────────
 function showFamilySharePage() {
     const c = document.getElementById('mem-section-content'); if (!c) return;
-    const code = currentFamilyCode || 'BABY-XXXX';
     c.innerHTML =
         sectionCard(
-        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">' +
+        '<div class="mem-album-head">' +
         '<div class="hub-card-title">우리 가족 앨범</div>' +
-        '<button type="button" class="btn btn-sm btn-outline" onclick="inviteFamily()">+ 초대</button></div>' +
-        '<div id="family-member-row" class="hub-member-row">' +
+        '<button type="button" class="btn btn-sm btn-primary" onclick="showPhotoUpload()">사진 추가</button></div>' +
+        '<div id="family-member-row" class="hub-member-row mem-member-compact">' +
         '<div class="hub-avatar" style="background:#FFE4E8;">👩</div>' +
         '<div class="hub-avatar" style="background:#E4EEFF;">👨</div>' +
         '<div class="hub-avatar" style="background:#E4FFE8;">👴</div>' +
-        '<div class="hub-avatar" onclick="inviteFamily()" style="background:var(--color-border-light);cursor:pointer;color:var(--color-text-secondary);">+</div>' +
-        '<div style="margin-left:6px;min-width:0;"><div style="font-size:13px;font-weight:500;">가족과 함께 보는 중</div>' +
-        '<div style="font-size:11px;color:var(--color-text-secondary);">링크 하나로 간편 초대</div></div></div>' +
+        '<div style="margin-left:4px;min-width:0;"><div class="mem-member-label">가족과 함께 보는 중</div>' +
+        '<div class="mem-member-sub" id="family-member-count">구성원 확인 중…</div></div></div>' +
+        '<div id="photos-grid" class="mem-photos-grid">' +
+        '<div class="mem-photo-add" onclick="showPhotoUpload()">+</div></div>' +
+        '<p class="mem-photo-hint">촬영일 기준 D+N이 왼쪽 상단에 표시됩니다. 탭하여 수정할 수 있어요.</p>' +
+        '<button type="button" class="mem-more-btn" id="mem-invite-toggle" onclick="toggleMemInvite()" aria-expanded="false">' +
+        '<span>가족 초대 · 링크 공유</span><span class="mem-more-chevron" aria-hidden="true">▼</span></button>' +
+        '<div id="mem-invite-panel" class="mem-invite-panel" hidden>' +
+        '<p class="mem-invite-desc">초대 링크는 자주 쓰지 않아도 됩니다. 필요할 때 펼쳐서 공유하세요.</p>' +
         '<div class="hub-invite-box">' +
-        '<div><div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:2px;">초대 링크</div>' +
-        '<div id="family-code-display" class="hub-code">' + code + '</div></div>' +
-        '<button type="button" class="btn btn-sm btn-primary" onclick="createAndCopyFamily()">공유</button></div>'
+        '<div><div class="mem-invite-label">초대 코드</div>' +
+        '<div id="family-code-display" class="hub-code">불러오는 중…</div></div>' +
+        '<button type="button" class="btn btn-sm btn-primary" onclick="createAndCopyFamily()">링크 복사</button></div></div>'
         ) +
-        sectionCard(
-        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">' +
-        '<div class="hub-card-title">공유 사진</div>' +
-        '<button type="button" class="btn btn-sm btn-primary" onclick="showPhotoUpload()">📷 추가</button></div>' +
-        '<div id="photos-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:3px;border-radius:10px;overflow:hidden;">' +
-        '<div style="aspect-ratio:1;background:#F3F4F6;display:flex;align-items:center;justify-content:center;font-size:28px;">🐣</div>' +
-        '<div style="aspect-ratio:1;background:#F3F4F6;display:flex;align-items:center;justify-content:center;font-size:28px;">😊</div>' +
-        '<div onclick="showPhotoUpload()" style="aspect-ratio:1;background:var(--color-primary-light);display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer;color:var(--color-primary-dark);font-weight:700;">+</div></div></div>'
-        );
+        '<div id="photo-edit-modal" class="photo-edit-modal" hidden></div>';
+    loadFamilyCode();
     loadPhotosGrid();
+}
+
+function toggleMemInvite() {
+    const panel = document.getElementById('mem-invite-panel');
+    const btn = document.getElementById('mem-invite-toggle');
+    if (!panel || !btn) return;
+    const open = panel.hidden;
+    panel.hidden = !open;
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    btn.classList.toggle('mem-more-btn-open', open);
+}
+
+async function loadFamilyCode() {
+    const babyId = currentBabyId || await getDefaultBabyId();
+    if (!babyId) return;
+    try {
+        const res = await fetch(API + '/api/family/code?baby_id=' + babyId, { headers: authHeaders() });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data.family_code) currentFamilyCode = data.family_code;
+        const el = document.getElementById('family-code-display');
+        if (el) el.textContent = data.family_code || '아직 없음';
+        const cnt = document.getElementById('family-member-count');
+        if (cnt) cnt.textContent = (data.member_count || 0) + '명 참여 중';
+    } catch (e) {}
+}
+
+let _memPhotosCache = [];
+
+function photoTakenDateInputValue(iso) {
+    if (!iso) return new Date().toISOString().slice(0, 10);
+    return iso.slice(0, 10);
 }
 
 async function loadPhotosGrid() {
@@ -1243,32 +1273,96 @@ async function loadPhotosGrid() {
         const res = await fetch(API+'/api/photos/'+babyId, {headers:authHeaders()});
         if (!res.ok) return;
         const items = await res.json();
+        _memPhotosCache = items;
         const container = document.getElementById('photos-grid'); if (!container) return;
-        if (items.length === 0) return;
-        container.innerHTML = items.slice(0,8).map(p =>
-            '<div style="aspect-ratio:1;background:#F3F4F6;display:flex;align-items:center;justify-content:center;font-size:28px;overflow:hidden;">' +
-            (p.thumbnail_path ? '<img src="'+p.thumbnail_path+'" style="width:100%;height:100%;object-fit:cover;">' : '📷') + '</div>'
-        ).join('') +
-        '<div onclick="showPhotoUpload()" style="aspect-ratio:1;background:#FFE4F0;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer;color:#FF6B9D;font-weight:700;">+</div>';
+        const cells = items.map(function (p) {
+            const thumb = p.thumbnail_url || p.file_url;
+            const label = p.day_label || '';
+            return '<button type="button" class="mem-photo-cell" onclick="openPhotoEdit(\'' + p.id + '\')">' +
+                (label ? '<span class="mem-photo-day">' + label + '</span>' : '') +
+                (thumb ? '<img src="' + thumb + '" alt="" loading="lazy">' : '<span class="mem-photo-placeholder">📷</span>') +
+                '</button>';
+        }).join('');
+        container.innerHTML = cells +
+            '<button type="button" class="mem-photo-add" onclick="showPhotoUpload()">+</button>';
     } catch(e) {}
 }
 
-async function createAndCopyFamily() {
-    const code = 'BABY-' + Math.random().toString(36).slice(2,6).toUpperCase();
-    currentFamilyCode = code;
-    const el = document.getElementById('family-code-display');
-    if (el) el.textContent = code;
-    try { await navigator.clipboard.writeText('우리 아이 앨범 초대: ' + code); showToast('링크 복사됨! 카톡으로 공유해보세요 📤', 'success'); }
-    catch(e) { showToast('초대 코드: ' + code, 'success'); }
+function openPhotoEdit(photoId) {
+    const p = _memPhotosCache.find(function (x) { return x.id === photoId; });
+    if (!p) return;
+    const takenDate = photoTakenDateInputValue(p.taken_date || p.date);
+    const caption = (p.caption || '').replace(/"/g, '&quot;');
+    const modal = document.getElementById('photo-edit-modal');
+    if (!modal) return;
+    modal.hidden = false;
+    modal.innerHTML =
+        '<div class="photo-edit-backdrop" onclick="closePhotoEdit()"></div>' +
+        '<div class="photo-edit-sheet" role="dialog" aria-label="사진 정보 수정">' +
+        '<div class="photo-edit-title">사진 정보 수정</div>' +
+        '<p class="photo-edit-note">업로드일과 촬영일이 다를 수 있어요. D+N은 촬영일 기준입니다.</p>' +
+        (p.day_label ? '<p class="photo-edit-day-preview">현재 라벨: <strong>' + p.day_label + '</strong></p>' : '') +
+        '<div class="form-group"><label class="form-label">촬영일</label>' +
+        '<input class="form-input" type="date" id="photo-edit-date" value="' + takenDate + '"></div>' +
+        '<div class="form-group"><label class="form-label">메모</label>' +
+        '<input class="form-input" id="photo-edit-caption" value="' + caption + '"></div>' +
+        '<button type="button" class="btn btn-primary btn-full" onclick="savePhotoEdit(\'' + photoId + '\')">저장</button>' +
+        '<button type="button" class="btn btn-outline btn-full" style="margin-top:8px;" onclick="closePhotoEdit()">닫기</button></div>';
 }
-function inviteFamily() { createAndCopyFamily(); }
+
+function closePhotoEdit() {
+    const modal = document.getElementById('photo-edit-modal');
+    if (modal) { modal.hidden = true; modal.innerHTML = ''; }
+}
+
+async function savePhotoEdit(photoId) {
+    const taken = document.getElementById('photo-edit-date')?.value;
+    const caption = document.getElementById('photo-edit-caption')?.value ?? '';
+    try {
+        const res = await fetch(API + '/api/photos/' + photoId, {
+            method: 'PATCH',
+            headers: Object.assign({ 'Content-Type': 'application/json' }, authHeaders()),
+            body: JSON.stringify({ taken_date: taken, caption: caption }),
+        });
+        if (!res.ok) throw new Error('저장 실패');
+        showToast('사진 정보가 저장됐어요', 'success');
+        closePhotoEdit();
+        loadPhotosGrid();
+    } catch (e) {
+        showToast('저장에 실패했어요', 'error');
+    }
+}
+
+async function createAndCopyFamily() {
+    const babyId = currentBabyId || await getDefaultBabyId();
+    if (!babyId) return;
+    try {
+        const res = await fetch(API + '/api/family/code?baby_id=' + babyId, { method: 'POST', headers: authHeaders() });
+        const data = await res.json();
+        const code = data.family_code;
+        currentFamilyCode = code;
+        const el = document.getElementById('family-code-display');
+        if (el) el.textContent = code;
+        const text = data.invite_url || ('우리 아이 앨범 초대: ' + code);
+        await navigator.clipboard.writeText(text);
+        showToast('초대 링크가 복사됐어요', 'success');
+        const panel = document.getElementById('mem-invite-panel');
+        if (panel && panel.hidden) toggleMemInvite();
+    } catch (e) {
+        showToast('링크 복사에 실패했어요', 'error');
+    }
+}
 
 function showPhotoUpload() {
+    const today = new Date().toISOString().slice(0, 10);
     document.getElementById('main-content').innerHTML =
         '<div class="hub-page">' + hubPageHeader('사진 추가', '추억 앨범에 저장') +
         '<div class="hub-card">' +
         '<div class="form-group"><label class="form-label">사진 선택</label>' +
         '<input type="file" accept="image/*" capture="environment" id="photo-file" class="form-input" style="padding:10px;"></div>' +
+        '<div class="form-group"><label class="form-label">촬영일</label>' +
+        '<input class="form-input" type="date" id="photo-taken-date" value="' + today + '">' +
+        '<p class="form-hint">업로드일과 다르면 실제 찍은 날로 바꿔주세요.</p></div>' +
         '<div class="form-group"><label class="form-label">메모</label>' +
         '<input class="form-input" id="photo-caption" placeholder="오늘의 순간을 기록하세요"></div>' +
         '<button class="btn btn-primary btn-full" onclick="uploadPhoto()">업로드</button>' +
@@ -1281,6 +1375,7 @@ async function uploadPhoto() {
     const formData = new FormData();
     formData.append('baby_id', babyId);
     formData.append('caption', document.getElementById('photo-caption').value);
+    formData.append('taken_date', document.getElementById('photo-taken-date')?.value || '');
     formData.append('file', fileInput.files[0]);
     await fetch(API+'/api/photos/upload', {method:'POST', headers:authHeaders(), body:formData});
     showToast('사진 업로드 완료! 📸','success');

@@ -2310,6 +2310,163 @@ body::after {
     margin-bottom: 12px;
     flex-wrap: wrap;
 }
+
+/* 추억 — 가족 앨범 */
+.mem-album-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+.mem-member-compact { margin-bottom: 14px; }
+.mem-member-label {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-text);
+}
+.mem-member-sub {
+    font-size: var(--text-xs);
+    color: var(--color-text-secondary);
+    margin-top: 2px;
+}
+.mem-photos-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+.mem-photo-cell {
+    position: relative;
+    aspect-ratio: 1;
+    padding: 0;
+    border: none;
+    background: var(--color-border-light);
+    cursor: pointer;
+    overflow: hidden;
+    font-family: var(--font);
+}
+.mem-photo-cell img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+.mem-photo-placeholder {
+    font-size: 28px;
+    line-height: 1;
+}
+.mem-photo-day {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    z-index: 2;
+    padding: 3px 7px;
+    border-radius: var(--radius-full);
+    background: rgba(30, 27, 46, 0.72);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+}
+.mem-photo-add {
+    aspect-ratio: 1;
+    border: none;
+    background: var(--color-primary-light);
+    color: var(--color-primary-dark);
+    font-size: 24px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: var(--font);
+    min-height: var(--touch-min);
+}
+.mem-photo-hint {
+    font-size: var(--text-xs);
+    color: var(--color-text-tertiary);
+    margin: 10px 0 12px;
+    line-height: var(--line-normal);
+}
+.mem-more-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 12px 14px;
+    min-height: 44px;
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--radius-md);
+    background: var(--color-bg);
+    font-family: var(--font);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+}
+.mem-more-btn-open .mem-more-chevron { transform: rotate(180deg); }
+.mem-more-chevron {
+    font-size: 11px;
+    transition: transform 0.2s ease;
+}
+.mem-invite-panel {
+    margin-top: 8px;
+    padding: 12px;
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--radius-md);
+    background: var(--color-background-secondary);
+}
+.mem-invite-desc,
+.mem-invite-label {
+    font-size: var(--text-xs);
+    color: var(--color-text-secondary);
+    line-height: var(--line-normal);
+}
+.mem-invite-desc { margin: 0 0 10px; }
+.mem-invite-label { margin-bottom: 2px; }
+.form-hint {
+    font-size: var(--text-xs);
+    color: var(--color-text-tertiary);
+    margin-top: 6px;
+    line-height: var(--line-normal);
+}
+.photo-edit-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 300;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+}
+.photo-edit-modal[hidden] { display: none !important; }
+.photo-edit-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(30, 27, 46, 0.45);
+}
+.photo-edit-sheet {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 480px;
+    background: var(--color-card);
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    padding: 20px 16px max(20px, env(safe-area-inset-bottom));
+    box-shadow: var(--shadow-lg);
+}
+.photo-edit-title {
+    font-size: var(--text-lg);
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+.photo-edit-note,
+.photo-edit-day-preview {
+    font-size: var(--text-xs);
+    color: var(--color-text-secondary);
+    line-height: var(--line-normal);
+    margin-bottom: 12px;
+}
 .hub-avatar {
     width: 38px;
     height: 38px;
@@ -2400,7 +2557,7 @@ body::after {
     background: var(--color-card);
     border-radius: var(--radius-xl);
     padding: 18px 16px;
-    margin-bottom: 14px;
+    margin-bottom: 10px;
     box-shadow: var(--shadow-md);
     border: 1px solid var(--color-border-light);
     font-size: 15px;
@@ -2771,8 +2928,13 @@ body::after {
 /* ── 홈 롤링 광고/쇼핑 배너 ── */
 .home-ad-mount:empty { display: none; }
 
+.home-growth-card + .home-ad-carousel,
+.home-growth-card + .home-ad-mount {
+    margin-top: 0;
+}
+
 .home-ad-carousel {
-    margin: 14px 0 10px;
+    margin: 0 0 8px;
     border-radius: var(--radius-md);
     border: 1px solid var(--color-border-light);
     background: var(--color-card);
@@ -2799,9 +2961,9 @@ body::after {
 .home-ad-slide-inner {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 12px 14px;
-    min-height: 88px;
+    gap: 8px;
+    padding: 10px 12px;
+    min-height: 72px;
 }
 
 .home-ad-thumb {
@@ -2883,14 +3045,14 @@ body::after {
 }
 
 .home-ad-footer {
-    padding: 0 14px 10px;
+    padding: 0 12px 6px;
 }
 
 .home-ad-dots {
     display: flex;
     justify-content: center;
-    gap: 6px;
-    margin-bottom: 6px;
+    gap: 5px;
+    margin-bottom: 4px;
 }
 
 .home-ad-dot {
