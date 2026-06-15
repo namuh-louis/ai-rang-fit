@@ -1,5 +1,6 @@
 {
   "updated_at": "2026-06-04",
+  "min_month": 6,
   "disclaimer": "외부 브랜드 공식 사이트로 이동합니다. 가격·배송·식단은 각 업체 안내를 확인하세요.",
   "brands": [
     {
@@ -7,7 +8,9 @@
       "key": "foodcare",
       "name": "푸드케어",
       "tagline": "유리병 이유식",
+      "stage": "early",
       "description": "유리병 용기 사용으로 위생과 환경호르몬 안전성을 최우선시하여 높은 신뢰도 확보.",
+      "suitable_months": [6, 7, 8, 9, 10, 11, 12, 15, 18],
       "url": "https://www.foodcare-cle.com/"
     },
     {
@@ -15,7 +18,9 @@
       "key": "lusol",
       "name": "루솔",
       "tagline": "온가족 푸드솔루션",
+      "stage": "early",
       "description": "뛰어난 가성비와 접근성, 폭넓은 메뉴 구성으로 대중적 인지도 및 재구매율 최상위권.",
+      "suitable_months": [5, 6, 7, 8, 9, 10, 11, 12, 15, 18, 21, 24],
       "url": "https://www.lusol.co.kr/"
     },
     {
@@ -23,7 +28,9 @@
       "key": "bebecook",
       "name": "베베쿡",
       "tagline": "데이터 기반 맞춤 식단",
+      "stage": "early",
       "description": "오랜 역사와 데이터 기반 맞춤형 식단, 전문 영양사의 체계적인 서비스로 시장 선도.",
+      "suitable_months": [5, 6, 7, 8, 9, 10, 11, 12, 15, 18, 21, 24],
       "url": "https://bebecook.com/"
     },
     {
@@ -31,7 +38,9 @@
       "key": "ecomom",
       "name": "에코맘 산골",
       "tagline": "지리산 친환경 로컬",
+      "stage": "mid",
       "description": "지리산 청정 지역 기반의 친환경 로컬 식재료 사용, 프리미엄 이미지 구축.",
+      "suitable_months": [6, 7, 8, 9, 10, 11, 12, 15, 18],
       "url": "https://ecomommeal.co.kr/"
     },
     {
@@ -39,7 +48,9 @@
       "key": "jjangjuk",
       "name": "짱죽",
       "tagline": "농도·실온 보관 편의",
+      "stage": "mid",
       "description": "아이들의 식감을 고려한 다양한 농도(되직함) 조절 가능, 실온 보관 등 편의성 강화.",
+      "suitable_months": [6, 7, 8, 9, 10, 11, 12, 15, 18, 21, 24],
       "url": "https://www.jjangjuk.com/"
     },
     {
@@ -47,7 +58,9 @@
       "key": "babybonjuk",
       "name": "베이비본죽",
       "tagline": "본죽 프리미엄 이유식",
+      "stage": "mid",
       "description": "본죽의 인프라를 활용한 방대한 메뉴 종류(600여 종 이상)와 안정적인 품질.",
+      "suitable_months": [6, 7, 8, 9, 10, 11, 12, 15, 18, 21, 24],
       "url": "https://babybonjuk.co.kr/"
     },
     {
@@ -55,7 +68,9 @@
       "key": "ivenet",
       "name": "아이배냇",
       "tagline": "배냇밀 · 원물 위주",
+      "stage": "late",
       "description": "아이 전용 식품 전문 브랜드로서의 탄탄한 신뢰도와 원물 위주의 건강한 식단.",
+      "suitable_months": [8, 9, 10, 11, 12, 15, 18, 21, 24],
       "url": "https://www.venetmeal.com/"
     }
   ]

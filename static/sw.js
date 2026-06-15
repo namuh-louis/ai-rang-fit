@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ourapp-v3-m16';
+const CACHE_NAME = 'ourapp-v3-m18';
 const STATIC_ASSETS = [
   '/',
   '/static/css/style.css',

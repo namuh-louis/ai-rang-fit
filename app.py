@@ -766,6 +766,27 @@ def _load_play_guides_data() -> dict:
         return json.load(f)
 
 
+def _brand_matches_month(brand: dict, month: int) -> bool:
+    """브랜드 권장 개월과 요청 개월 매칭 (구간 내 개월 포함)"""
+    suitable = brand.get("suitable_months") or []
+    if not suitable:
+        return True
+    if month in suitable:
+        return True
+    lo, hi = min(suitable), max(suitable)
+    return lo <= month <= hi
+
+
+def _filter_baby_food_brands(brands: list, month: int = None, min_month: int = 6) -> list:
+    """개월에 맞는 브랜드만 반환 (min_month 미만이면 빈 목록)"""
+    if month is None:
+        return sorted(brands, key=lambda b: b.get("rank", 99))
+    if month < min_month:
+        return []
+    matched = [b for b in brands if _brand_matches_month(b, month)]
+    return sorted(matched, key=lambda b: b.get("rank", 99))
+
+
 def _filter_play_guides(guides: list, month: int = None, category: str = None) -> list:
     items = list(guides)
     if category:
@@ -2689,11 +2710,17 @@ async def get_diet_guides(month: int = None):
 
 
 @app.get("/api/baby-food-brands")
-async def get_baby_food_brands(user: User = Depends(get_current_user)):
-    """이유식 전문 브랜드 TOP 목록"""
+async def get_baby_food_brands(month: int = None, user: User = Depends(get_current_user)):
+    """이유식 전문 브랜드 — 개월 필터 적용"""
     data = _load_baby_food_brands()
+    min_month = int(data.get("min_month") or 6)
+    brands = _filter_baby_food_brands(data.get("brands", []), month, min_month)
     return {
-        "brands": data.get("brands", []),
+        "brands": brands,
+        "top_brands": brands[:2],
+        "month": month,
+        "min_month": min_month,
+        "show_brands": month is None or month >= min_month,
         "disclaimer": data.get("disclaimer", ""),
         "updated_at": data.get("updated_at"),
     }

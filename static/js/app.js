@@ -1806,39 +1806,90 @@ function filterPlayGuides(cat, el) {
 }
 
 // ── 이유식 탭 ─────────────────────────────────────────────────
+const DIET_STAGE_LABEL = { early: '초기', mid: '중기', late: '후기', toddler: '유아' };
+
+const DIET_MONTH_CHIPS = [4, 5, 6, 8, 10, 12];
+const DIET_MONTH_LABELS = ['4~5개월', '5~6개월', '6~8개월', '8~10개월', '10~12개월', '12개월+'];
+
+function snapDietChipMonth(month) {
+    var m = parseInt(month, 10) || 6;
+    var best = DIET_MONTH_CHIPS[0];
+    for (var i = 0; i < DIET_MONTH_CHIPS.length; i++) {
+        if (m >= DIET_MONTH_CHIPS[i]) best = DIET_MONTH_CHIPS[i];
+    }
+    return best;
+}
+
+function getDietMonth() {
+    if (window._dietMonth != null) return window._dietMonth;
+    if (window._babyAgeMonths != null) return snapDietChipMonth(window._babyAgeMonths);
+    return 6;
+}
+
 function renderDietTab(c) {
-    const months = [4,5,6,8,10,12];
-    const labels = ['4~5개월','5~6개월','6~8개월','8~10개월','10~12개월','12개월+'];
-    let sel = window._dietMonth || 6;
+    const sel = getDietMonth();
+    window._dietMonth = sel;
+    const subTab = window._dietSubTab || 'recipe';
     c.innerHTML =
-        '<p class="hub-card-desc" style="margin-bottom:10px;">개월수를 선택하면 맞춤 레시피를 보여드려요</p>' +
+        '<div class="hub-tab-bar diet-sub-tab-bar">' +
+        [['recipe', '직접 만들기'], ['delivery', '배달·구독']].map(function (t) {
+            const active = t[0] === subTab ? ' hub-tab-btn-active' : '';
+            return '<button type="button" id="diet-sub-' + t[0] + '" class="hub-tab-btn' + active + '" onclick="switchDietSubTab(\'' + t[0] + '\')">' + t[1] + '</button>';
+        }).join('') +
+        '</div>' +
+        '<p class="hub-card-desc diet-month-desc">개월을 선택하면 맞춤 콘텐츠를 보여드려요</p>' +
         '<div class="hub-chip-row" id="diet-month-chips">' +
-        months.map(function (m, i) {
-            return '<button type="button" onclick="selectDietMonth(' + m + ')" id="diet-chip-' + m + '" class="hub-chip' + (m === sel ? ' hub-chip-active' : '') + '">' + labels[i] + '</button>';
+        DIET_MONTH_CHIPS.map(function (m, i) {
+            return '<button type="button" onclick="selectDietMonth(' + m + ')" id="diet-chip-' + m + '" class="hub-chip' + (m === sel ? ' hub-chip-active' : '') + '">' + DIET_MONTH_LABELS[i] + '</button>';
         }).join('') + '</div>' +
-        '<div id="recipe-list"></div>' +
-        '<div id="diet-brands-section"></div>';
-    renderRecipes(sel);
-    loadBabyFoodBrands();
+        '<div id="diet-tab-content"></div>';
+    switchDietSubTab(subTab, true);
+}
+
+function switchDietSubTab(tab, skipScroll) {
+    window._dietSubTab = tab;
+    document.querySelectorAll('.diet-sub-tab-bar .hub-tab-btn').forEach(function (b) {
+        const key = (b.id || '').replace('diet-sub-', '');
+        b.classList.toggle('hub-tab-btn-active', key === tab);
+    });
+    refreshDietSubContent();
 }
 
 function selectDietMonth(m) {
     window._dietMonth = m;
-    [4, 5, 6, 8, 10, 12].forEach(function (v) {
+    window._dietBrandsExpanded = false;
+    window._dietRecipeTeaserExpanded = false;
+    DIET_MONTH_CHIPS.forEach(function (v) {
         const chip = document.getElementById('diet-chip-' + v);
         if (chip) chip.classList.toggle('hub-chip-active', v === m);
     });
-    renderRecipes(m);
+    refreshDietSubContent();
+}
+
+function refreshDietSubContent() {
+    const box = document.getElementById('diet-tab-content');
+    if (!box) return;
+    const month = getDietMonth();
+    if (window._dietSubTab === 'delivery') {
+        box.innerHTML = '<div id="diet-delivery-panel"><div class="loading"><div class="spinner"></div></div></div>';
+        loadDietDeliveryPanel(month);
+    } else {
+        box.innerHTML = '<div id="recipe-list"></div><div id="diet-recipe-teaser"></div>';
+        renderRecipes(month);
+        loadDietRecipeTeaser(month);
+    }
 }
 
 function renderRecipes(month) {
     const c = document.getElementById('recipe-list'); if (!c) return;
-    // 가장 가까운 월 데이터 찾기
-    const keys = Object.keys(RECIPES).map(Number).sort((a,b)=>a-b);
+    const keys = Object.keys(RECIPES).map(Number).sort(function (a, b) { return a - b; });
     let key = keys[0];
-    for (const k of keys) { if (month >= k) key = k; }
+    for (var i = 0; i < keys.length; i++) { if (month >= keys[i]) key = keys[i]; }
     const recipes = RECIPES[key] || [];
-    if (!recipes.length) { c.innerHTML = '<p style="text-align:center;padding:24px;color:var(--color-text-secondary);">레시피 준비 중입니다</p>'; return; }
+    if (!recipes.length) {
+        c.innerHTML = '<p class="diet-empty-msg">레시피 준비 중입니다</p>';
+        return;
+    }
     c.innerHTML = recipes.map(function (r) {
         return '<div class="hub-card" style="margin-bottom:10px;">' +
         '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">' +
@@ -1847,9 +1898,9 @@ function renderRecipes(month) {
         '<span class="tag tag-green" style="margin-top:4px;display:inline-block;">' + month + '개월+</span></div></div>' +
         '<div style="background:#F9FAFB;border-radius:10px;padding:10px;margin-bottom:8px;">' +
         '<div style="font-size:12px;font-weight:600;color:var(--color-text-primary);margin-bottom:4px;">🥕 재료</div>' +
-        '<div style="font-size:13px;color:var(--color-text-secondary);">'+r.ingredients.join(' · ')+'</div></div>' +
-        '<div style="font-size:13px;color:var(--color-text-secondary);line-height:1.6;margin-bottom:8px;">'+
-        '<span style="font-weight:600;color:var(--color-text-primary);">📝 만들기 </span>'+r.steps+'</div>' +
+        '<div style="font-size:13px;color:var(--color-text-secondary);">' + r.ingredients.join(' · ') + '</div></div>' +
+        '<div style="font-size:13px;color:var(--color-text-secondary);line-height:1.6;margin-bottom:8px;">' +
+        '<span style="font-weight:600;color:var(--color-text-primary);">📝 만들기 </span>' + r.steps + '</div>' +
         '<div class="hub-callout hub-callout-tip" style="margin-bottom:0;padding:8px 10px;">' +
         '<span style="font-size:12px;">💡 ' + r.tip + '</span></div></div>';
     }).join('');
@@ -1860,49 +1911,139 @@ function dietBrandEscape(s) {
     return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
 }
 
-async function loadBabyFoodBrands() {
-    const section = document.getElementById('diet-brands-section');
+async function fetchBabyFoodBrands(month) {
+    const res = await fetch(API + '/api/baby-food-brands?month=' + month, { headers: authHeaders() });
+    if (!res.ok) throw new Error('load brands');
+    return res.json();
+}
+
+function renderBrandCard(b, opts) {
+    opts = opts || {};
+    const rankClass = b.rank <= 3 ? ' diet-brand-rank-top' : '';
+    const compact = opts.compact;
+    const featured = opts.featured;
+    const cardClass = 'diet-brand-card hub-card' +
+        (compact ? ' diet-brand-card-compact' : '') +
+        (featured ? ' diet-brand-card-featured' : '');
+    if (compact) {
+        return '<button type="button" class="' + cardClass + '" onclick="openBabyFoodBrand(\'' + dietBrandEscape(b.key) + '\')">' +
+            '<span class="diet-brand-rank' + rankClass + '">' + b.rank + '</span>' +
+            '<span class="diet-brand-compact-name">' + dietBrandEscape(b.name) + '</span>' +
+            '<span class="diet-brand-compact-tag">' + dietBrandEscape(b.tagline || '') + '</span>' +
+            '</button>';
+    }
+    return '<article class="' + cardClass + '">' +
+        '<div class="diet-brand-card-head">' +
+        '<span class="diet-brand-rank' + rankClass + '">' + b.rank + '</span>' +
+        '<div class="diet-brand-meta">' +
+        '<h4 class="diet-brand-name">' + dietBrandEscape(b.name) + '</h4>' +
+        (b.tagline ? '<span class="diet-brand-tag">' + dietBrandEscape(b.tagline) + '</span>' : '') +
+        (b.stage && DIET_STAGE_LABEL[b.stage] ? '<span class="diet-brand-tag diet-brand-tag-stage">' + DIET_STAGE_LABEL[b.stage] + '</span>' : '') +
+        '</div></div>' +
+        '<p class="diet-brand-desc">' + dietBrandEscape(b.description) + '</p>' +
+        '<button type="button" class="btn btn-outline btn-sm diet-brand-btn" onclick="openBabyFoodBrand(\'' + dietBrandEscape(b.key) + '\')">공식 사이트 →</button>' +
+        '</article>';
+}
+
+async function loadDietRecipeTeaser(month) {
+    const section = document.getElementById('diet-recipe-teaser');
     if (!section) return;
+    if (month < 6) {
+        section.innerHTML =
+            '<div class="diet-prep-callout hub-callout hub-callout-tip">' +
+            '<p class="diet-prep-title">이유식 준비 시기</p>' +
+            '<p class="diet-prep-desc">본격 이유식은 보통 <strong>6개월 전후</strong>부터 시작해요. 소아과 상담 후 진행하세요. 배달·구독 비교는 6개월부터 확인할 수 있어요.</p>' +
+            '</div>';
+        return;
+    }
     section.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
     try {
-        const res = await fetch(API + '/api/baby-food-brands', { headers: authHeaders() });
-        if (!res.ok) throw new Error('load brands');
-        const data = await res.json();
-        renderBabyFoodBrands(section, data);
+        const data = await fetchBabyFoodBrands(month);
+        const top = data.top_brands || (data.brands || []).slice(0, 2);
+        const total = (data.brands || []).length;
+        if (!top.length) {
+            section.innerHTML = '';
+            return;
+        }
+        const expanded = !!window._dietRecipeTeaserExpanded;
+        const rest = (data.brands || []).slice(2);
+        section.innerHTML =
+            '<div class="diet-teaser-block">' +
+            '<div class="diet-teaser-head">' +
+            '<p class="diet-teaser-title">🛒 직접 만들기 힘들 때 · 배달 이유식</p>' +
+            '<p class="diet-teaser-sub">' + month + '개월에 많이 쓰는 서비스</p>' +
+            '</div>' +
+            '<div class="diet-brand-compact-row">' + top.map(function (b) { return renderBrandCard(b, { compact: true }); }).join('') + '</div>' +
+            (rest.length
+                ? '<button type="button" class="diet-teaser-expand-btn" onclick="toggleDietRecipeTeaser()">' +
+                    (expanded ? '접기 ▲' : '나머지 ' + rest.length + '곳 더보기 ▼') +
+                    '</button>' +
+                    (expanded
+                        ? '<div class="diet-brand-compact-row diet-brand-compact-row-more">' +
+                            rest.map(function (b) { return renderBrandCard(b, { compact: true }); }).join('') +
+                            '</div>'
+                        : '')
+                : '') +
+            '<button type="button" class="diet-teaser-link-btn" onclick="switchDietSubTab(\'delivery\')">전체 ' + total + '곳 비교 보기 →</button>' +
+            '</div>';
     } catch (e) {
-        section.innerHTML = '';
+        section.innerHTML = '<p class="diet-empty-msg">배달 업체를 불러오지 못했습니다.</p>';
     }
 }
 
-function renderBabyFoodBrands(section, data) {
-    const brands = data.brands || [];
-    if (!brands.length) {
-        section.innerHTML = '';
-        return;
+function toggleDietRecipeTeaser() {
+    window._dietRecipeTeaserExpanded = !window._dietRecipeTeaserExpanded;
+    loadDietRecipeTeaser(getDietMonth());
+}
+
+async function loadDietDeliveryPanel(month) {
+    const panel = document.getElementById('diet-delivery-panel');
+    if (!panel) return;
+    panel.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+    try {
+        const data = await fetchBabyFoodBrands(month);
+        if (!data.show_brands || month < (data.min_month || 6)) {
+            panel.innerHTML =
+                '<div class="diet-prep-callout hub-callout hub-callout-tip">' +
+                '<p class="diet-prep-title">6개월부터 추천해요</p>' +
+                '<p class="diet-prep-desc">이유식 배달·구독 비교는 <strong>6개월 이후</strong>에 맞춤 추천을 제공합니다. 개월 칩에서 6개월 이상을 선택해 주세요.</p>' +
+                '</div>';
+            return;
+        }
+        const brands = data.brands || [];
+        if (!brands.length) {
+            panel.innerHTML = '<p class="diet-empty-msg">이 개월에 맞는 추천 업체가 없습니다.</p>';
+            return;
+        }
+        const top = brands.slice(0, 2);
+        const rest = brands.slice(2);
+        const expanded = !!window._dietBrandsExpanded;
+        panel.innerHTML =
+            '<div class="diet-delivery-head">' +
+            '<h3 class="diet-brands-title">' + month + '개월 맞춤 배달·구독</h3>' +
+            '<p class="diet-brands-sub">이 시기에 많이 이용하는 전문 브랜드 ' + brands.length + '곳</p>' +
+            '</div>' +
+            '<div class="diet-brand-list diet-brand-list-featured">' +
+            top.map(function (b) { return renderBrandCard(b, { featured: true }); }).join('') +
+            '</div>' +
+            (rest.length
+                ? '<div class="diet-brands-collapse">' +
+                    '<button type="button" class="diet-brands-collapse-btn" onclick="toggleDietBrandsExpand()" aria-expanded="' + expanded + '">' +
+                    (expanded ? '접기 ▲' : '나머지 ' + rest.length + '곳 보기 ▼') +
+                    '</button>' +
+                    '<div class="diet-brand-list diet-brand-list-rest' + (expanded ? ' diet-brand-list-rest-open' : '') + '">' +
+                    rest.map(function (b) { return renderBrandCard(b); }).join('') +
+                    '</div></div>'
+                : '') +
+            (data.disclaimer ? '<p class="diet-brands-note">' + dietBrandEscape(data.disclaimer) + '</p>' : '');
+    } catch (e) {
+        panel.innerHTML = '<p class="diet-empty-msg">목록을 불러오지 못했습니다.</p>';
     }
-    section.innerHTML =
-        '<div class="diet-brands-block">' +
-        '<div class="diet-brands-head">' +
-        '<h3 class="diet-brands-title">이유식 전문 브랜드 TOP ' + brands.length + '</h3>' +
-        '<p class="diet-brands-sub">직접 만들기 어려울 때, 검증된 배달·구독 서비스</p>' +
-        '</div>' +
-        '<div class="diet-brand-list">' +
-        brands.map(function (b) {
-            const rankClass = b.rank <= 3 ? ' diet-brand-rank-top' : '';
-            return '<article class="diet-brand-card hub-card">' +
-                '<div class="diet-brand-card-head">' +
-                '<span class="diet-brand-rank' + rankClass + '">' + b.rank + '</span>' +
-                '<div class="diet-brand-meta">' +
-                '<h4 class="diet-brand-name">' + dietBrandEscape(b.name) + '</h4>' +
-                (b.tagline ? '<span class="diet-brand-tag">' + dietBrandEscape(b.tagline) + '</span>' : '') +
-                '</div></div>' +
-                '<p class="diet-brand-desc">' + dietBrandEscape(b.description) + '</p>' +
-                '<button type="button" class="btn btn-outline btn-sm diet-brand-btn" onclick="openBabyFoodBrand(\'' + dietBrandEscape(b.key) + '\')">공식 사이트 →</button>' +
-                '</article>';
-        }).join('') +
-        '</div>' +
-        (data.disclaimer ? '<p class="diet-brands-note">' + dietBrandEscape(data.disclaimer) + '</p>' : '') +
-        '</div>';
+}
+
+function toggleDietBrandsExpand() {
+    window._dietBrandsExpanded = !window._dietBrandsExpanded;
+    loadDietDeliveryPanel(getDietMonth());
 }
 
 async function openBabyFoodBrand(brandKey) {
@@ -1912,7 +2053,11 @@ async function openBabyFoodBrand(brandKey) {
         const res = await fetch(API + '/api/baby-food-brands/click', {
             method: 'POST',
             headers: Object.assign({ 'Content-Type': 'application/json' }, authHeaders()),
-            body: JSON.stringify({ brand_key: brandKey, slot: 'diet', baby_id: babyId }),
+            body: JSON.stringify({
+                brand_key: brandKey,
+                slot: window._dietSubTab === 'delivery' ? 'diet-delivery' : 'diet-recipe',
+                baby_id: babyId,
+            }),
         });
         if (!res.ok) throw new Error('click');
         const data = await res.json();
