@@ -1911,10 +1911,30 @@ function dietBrandEscape(s) {
     return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
 }
 
+function getDietBrandQueryMonth(month) {
+    const m = parseInt(month, 10) || 6;
+    return m < 6 ? 6 : m;
+}
+
 async function fetchBabyFoodBrands(month) {
-    const res = await fetch(API + '/api/baby-food-brands?month=' + month, { headers: authHeaders() });
-    if (!res.ok) throw new Error('load brands');
-    return res.json();
+    const queryMonth = getDietBrandQueryMonth(month);
+    const res = await fetch(API + '/api/baby-food-brands?month=' + queryMonth, { headers: authHeaders() });
+    const ct = (res.headers.get('content-type') || '').toLowerCase();
+    if (!res.ok || ct.indexOf('application/json') < 0) {
+        throw new Error('brands ' + res.status);
+    }
+    const data = await res.json();
+    data._query_month = queryMonth;
+    data._is_preview = (parseInt(month, 10) || 0) < (data.min_month || 6);
+    return data;
+}
+
+let _dietBrandReq = 0;
+
+function showDietPage() {
+    window._dietSubTab = 'recipe';
+    showPlayGuidesPage();
+    switchDevTab('diet');
 }
 
 function renderBrandCard(b, opts) {
@@ -1997,30 +2017,31 @@ function toggleDietRecipeTeaser() {
 }
 
 async function loadDietDeliveryPanel(month) {
+    const reqId = ++_dietBrandReq;
     const panel = document.getElementById('diet-delivery-panel');
     if (!panel) return;
     panel.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
     try {
         const data = await fetchBabyFoodBrands(month);
-        if (!data.show_brands || month < (data.min_month || 6)) {
-            panel.innerHTML =
-                '<div class="diet-prep-callout hub-callout hub-callout-tip">' +
-                '<p class="diet-prep-title">6개월부터 추천해요</p>' +
-                '<p class="diet-prep-desc">이유식 배달·구독 비교는 <strong>6개월 이후</strong>에 맞춤 추천을 제공합니다. 개월 칩에서 6개월 이상을 선택해 주세요.</p>' +
-                '</div>';
-            return;
-        }
+        if (reqId !== _dietBrandReq) return;
+        const panelNow = document.getElementById('diet-delivery-panel');
+        if (!panelNow) return;
         const brands = data.brands || [];
+        const displayMonth = data._query_month || getDietBrandQueryMonth(month);
         if (!brands.length) {
-            panel.innerHTML = '<p class="diet-empty-msg">이 개월에 맞는 추천 업체가 없습니다.</p>';
+            panelNow.innerHTML = '<p class="diet-empty-msg">이 개월에 맞는 추천 업체가 없습니다.</p>';
             return;
         }
         const top = brands.slice(0, 2);
         const rest = brands.slice(2);
         const expanded = !!window._dietBrandsExpanded;
-        panel.innerHTML =
+        panelNow.innerHTML =
+            (data._is_preview
+                ? '<div class="diet-prep-callout hub-callout hub-callout-tip" style="margin-bottom:12px;">' +
+                    '<p class="diet-prep-desc">아직 이유식 전 단계예요. <strong>6개월 기준</strong>으로 미리 살펴볼 수 있어요.</p></div>'
+                : '') +
             '<div class="diet-delivery-head">' +
-            '<h3 class="diet-brands-title">' + month + '개월 맞춤 배달·구독</h3>' +
+            '<h3 class="diet-brands-title">' + displayMonth + '개월 맞춤 배달·구독</h3>' +
             '<p class="diet-brands-sub">이 시기에 많이 이용하는 전문 브랜드 ' + brands.length + '곳</p>' +
             '</div>' +
             '<div class="diet-brand-list diet-brand-list-featured">' +
@@ -2037,7 +2058,12 @@ async function loadDietDeliveryPanel(month) {
                 : '') +
             (data.disclaimer ? '<p class="diet-brands-note">' + dietBrandEscape(data.disclaimer) + '</p>' : '');
     } catch (e) {
-        panel.innerHTML = '<p class="diet-empty-msg">목록을 불러오지 못했습니다.</p>';
+        if (reqId !== _dietBrandReq) return;
+        const panelNow = document.getElementById('diet-delivery-panel');
+        if (!panelNow) return;
+        panelNow.innerHTML =
+            '<p class="diet-empty-msg">목록을 불러오지 못했습니다.</p>' +
+            '<p class="diet-empty-msg" style="margin-top:8px;font-size:12px;">로컬은 <code>uvicorn app:app --port 8000</code>으로 실행했는지 확인해 주세요.</p>';
     }
 }
 
@@ -2083,18 +2109,6 @@ async function loadDietQuick(){
             '<span style="font-size:18px;">💡</span>'+
             '<span style="font-size:13px;color:#065F46;line-height:1.5;">'+data.tip+'</span></div>':'') +
         data.recipes.slice(0,3).map(r=>recipeCard(r)).join('');
-}
-function showDietPage(){
-    document.getElementById('main-content').innerHTML=
-        '<div class="hub-page">' +
-        hubPageHeader('이유식 레시피', '개월수별 맞춤 레시피') +
-        sectionCard(
-        '<div style="display:flex;gap:8px;align-items:center;">'+
-        '<input class="form-input" id="diet-month" type="number" value="6" min="5" max="12" style="width:72px;text-align:center;font-size:16px;font-weight:600;">'+
-        '<span style="font-size:14px;color:var(--color-text-secondary);">개월</span>'+
-        '<button type="button" class="btn btn-primary" style="flex:1;" onclick="loadDietRecipes()">레시피 보기</button></div>'
-        ) +
-        '<div id="diet-recipes"></div></div>';
 }
 function recipeCard(r){
     return '<div style="background:var(--color-background-secondary,#F9FAFB);border-radius:16px;padding:14px;margin-bottom:10px;">'+

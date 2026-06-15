@@ -2710,8 +2710,8 @@ async def get_diet_guides(month: int = None):
 
 
 @app.get("/api/baby-food-brands")
-async def get_baby_food_brands(month: int = None, user: User = Depends(get_current_user)):
-    """이유식 전문 브랜드 — 개월 필터 적용"""
+async def get_baby_food_brands(month: int = None):
+    """이유식 전문 브랜드 — 개월 필터 (공개 가이드 데이터)"""
     data = _load_baby_food_brands()
     min_month = int(data.get("min_month") or 6)
     brands = _filter_baby_food_brands(data.get("brands", []), month, min_month)
