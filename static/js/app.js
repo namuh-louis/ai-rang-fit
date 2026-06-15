@@ -1710,14 +1710,99 @@ function showDevStage(idx) {
 }
 
 // ── 놀이 가이드 탭 ────────────────────────────────────────────
+const PG_CAT_LABEL = { motor: '대소근육', language: '언어', social: '사회성', sensory: '감각' };
+const PG_DIFF_LABEL = { 1: '쉬움', 2: '보통', 3: '어려움' };
+
+function getPlayGuideMonth() {
+    return window._babyAgeMonths != null ? window._babyAgeMonths : 6;
+}
+
 function renderPlayGuideTab(c) {
+    const month = getPlayGuideMonth();
     c.innerHTML =
+        '<p class="hub-card-desc" style="margin-bottom:10px;">' +
+        (month > 0 ? '우리 아이 <strong>' + month + '개월</strong>에 맞는 놀이를 추천해요' : '개월에 맞는 놀이를 골라보세요') +
+        '</p>' +
         '<div class="hub-chip-row">' +
         [['all','전체'],['motor','대소근육'],['language','언어'],['social','사회성'],['sensory','감각']].map(function (cat, i) {
             return '<button type="button" id="pg-cat-' + cat[0] + '" class="hub-chip' + (i === 0 ? ' hub-chip-active' : '') + '" onclick="filterPlayGuides(\'' + cat[0] + '\',this)">' + cat[1] + '</button>';
         }).join('') + '</div>' +
         '<div id="playguides-list"></div>';
     loadPlayGuides();
+}
+
+function playGuideEscape(s) {
+    if (!s) return '';
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+}
+
+function formatPlayMonths(months) {
+    if (!months || !months.length) return '';
+    const sorted = months.slice().sort(function (a, b) { return a - b; });
+    if (sorted.length === 1) return sorted[0] + '개월';
+    return sorted[0] + '~' + sorted[sorted.length - 1] + '개월';
+}
+
+async function loadPlayGuides(category) {
+    category = category || 'all';
+    const catColor = { all: '#34D399', motor: '#FB923C', language: '#60A5FA', social: '#F472B6', sensory: '#A78BFA' };
+    const catIcon = { all: '🎯', motor: '🏃', language: '🗣️', social: '😊', sensory: '✋' };
+    const container = document.getElementById('playguides-list');
+    if (!container) return;
+    container.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+    if (window._babyAgeMonths == null && typeof getDefaultBabyId === 'function') {
+        try {
+            const babyId = currentBabyId || await getDefaultBabyId();
+            if (babyId) {
+                const ageRes = await fetch(API + '/api/babies/' + babyId + '/age', { headers: authHeaders() });
+                if (ageRes.ok) {
+                    const age = await ageRes.json();
+                    window._babyAgeMonths = age.total_months != null ? age.total_months : 6;
+                }
+            }
+        } catch (e) { /* default month */ }
+    }
+    const month = getPlayGuideMonth();
+    let url = API + '/api/playguides?month=' + month;
+    if (category !== 'all') url += '&category=' + encodeURIComponent(category);
+    try {
+        const res = await fetch(url, { headers: authHeaders() });
+        const items = await res.json();
+        if (!items.length) {
+            container.innerHTML = '<div class="playguide-empty">해당 조건의 놀이가 없습니다. 다른 카테고리를 선택해 보세요.</div>';
+            return;
+        }
+        container.innerHTML = items.map(function (pg) {
+            const ic = catIcon[pg.category] || '🎮';
+            const col = catColor[pg.category] || '#34D399';
+            const catLabel = PG_CAT_LABEL[pg.category] || pg.category;
+            const diffLabel = PG_DIFF_LABEL[pg.difficulty] || '';
+            return '<article class="hub-card playguide-card">' +
+                '<div class="playguide-card-head">' +
+                '<div class="hub-list-icon playguide-icon" style="background:' + col + '22;">' + ic + '</div>' +
+                '<div class="playguide-meta">' +
+                '<h3 class="playguide-title">' + playGuideEscape(pg.title) + '</h3>' +
+                '<div class="playguide-tags">' +
+                '<span class="playguide-tag" style="color:' + col + ';background:' + col + '22;">' + catLabel + '</span>' +
+                '<span class="playguide-tag playguide-tag-muted">' + pg.duration_min + '분</span>' +
+                (diffLabel ? '<span class="playguide-tag playguide-tag-muted">' + diffLabel + '</span>' : '') +
+                '<span class="playguide-tag playguide-tag-muted">' + formatPlayMonths(pg.suitable_months) + '</span>' +
+                '</div></div></div>' +
+                '<p class="playguide-desc">' + playGuideEscape(pg.description) + '</p>' +
+                (pg.material_needed ? '<p class="playguide-material">🧰 ' + playGuideEscape(pg.material_needed) + '</p>' : '') +
+                '</article>';
+        }).join('');
+    } catch (e) {
+        container.innerHTML = '<div class="playguide-empty">놀이 가이드를 불러오지 못했습니다.</div>';
+    }
+}
+
+function filterPlayGuides(cat, el) {
+    document.querySelectorAll('[id^="pg-cat-"]').forEach(function (b) {
+        b.classList.remove('hub-chip-active');
+    });
+    if (el) el.classList.add('hub-chip-active');
+    loadPlayGuides(cat);
 }
 
 // ── 이유식 탭 ─────────────────────────────────────────────────
@@ -1731,8 +1816,10 @@ function renderDietTab(c) {
         months.map(function (m, i) {
             return '<button type="button" onclick="selectDietMonth(' + m + ')" id="diet-chip-' + m + '" class="hub-chip' + (m === sel ? ' hub-chip-active' : '') + '">' + labels[i] + '</button>';
         }).join('') + '</div>' +
-        '<div id="recipe-list"></div>';
+        '<div id="recipe-list"></div>' +
+        '<div id="diet-brands-section"></div>';
     renderRecipes(sel);
+    loadBabyFoodBrands();
 }
 
 function selectDietMonth(m) {
@@ -1768,35 +1855,76 @@ function renderRecipes(month) {
     }).join('');
 }
 
-
-async function loadPlayGuides(category='all'){
-    const catColor={all:'#34D399',motor:'#FB923C',language:'#60A5FA',social:'#F472B6',sensory:'#A78BFA'};
-    const catIcon={all:'🎯',motor:'🏃',language:'🗣️',social:'😊',sensory:'✋'};
-    try{
-        const res=await fetch(API+'/api/playguides?month=6'+(category!=='all'?'&category='+category:''),{headers:authHeaders()});
-        const items=await res.json();
-        const container=document.getElementById('playguides-list');if(!container)return;
-        container.innerHTML=items.map(pg=>{
-            const ic=catIcon[pg.category]||'🎮';
-            const col=catColor[pg.category]||'#34D399';
-            return '<div class="hub-card" style="margin-bottom:10px;display:flex;gap:12px;align-items:flex-start;">' +
-                '<div class="hub-list-icon" style="background:'+col+'22;">'+ic+'</div>' +
-                '<div style="flex:1;">' +
-                '<div style="font-size:15px;font-weight:600;color:var(--color-text-primary);margin-bottom:3px;">'+pg.title+'</div>' +
-                '<div style="display:flex;gap:8px;align-items:center;margin-bottom:5px;">' +
-                '<span style="font-size:11px;font-weight:600;color:'+col+';background:'+col+'22;padding:2px 8px;border-radius:99px;">'+pg.duration_min+'분</span>' +
-                '<span style="font-size:11px;color:var(--color-text-secondary);">'+pg.category+'</span></div>' +
-                '<div style="font-size:13px;color:var(--color-text-secondary);line-height:1.5;">'+pg.description+'</div>' +
-                '</div></div>';
-        }).join('')||'<div style="text-align:center;padding:32px;color:var(--color-text-secondary);">조건에 맞는 놀이가 없습니다</div>';
-    }catch(e){}}
-function filterPlayGuides(cat, el) {
-    document.querySelectorAll('[id^="pg-cat-"]').forEach(function (b) {
-        b.classList.remove('hub-chip-active');
-    });
-    if (el) el.classList.add('hub-chip-active');
-    loadPlayGuides(cat);
+function dietBrandEscape(s) {
+    if (!s) return '';
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
 }
+
+async function loadBabyFoodBrands() {
+    const section = document.getElementById('diet-brands-section');
+    if (!section) return;
+    section.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+    try {
+        const res = await fetch(API + '/api/baby-food-brands', { headers: authHeaders() });
+        if (!res.ok) throw new Error('load brands');
+        const data = await res.json();
+        renderBabyFoodBrands(section, data);
+    } catch (e) {
+        section.innerHTML = '';
+    }
+}
+
+function renderBabyFoodBrands(section, data) {
+    const brands = data.brands || [];
+    if (!brands.length) {
+        section.innerHTML = '';
+        return;
+    }
+    section.innerHTML =
+        '<div class="diet-brands-block">' +
+        '<div class="diet-brands-head">' +
+        '<h3 class="diet-brands-title">이유식 전문 브랜드 TOP ' + brands.length + '</h3>' +
+        '<p class="diet-brands-sub">직접 만들기 어려울 때, 검증된 배달·구독 서비스</p>' +
+        '</div>' +
+        '<div class="diet-brand-list">' +
+        brands.map(function (b) {
+            const rankClass = b.rank <= 3 ? ' diet-brand-rank-top' : '';
+            return '<article class="diet-brand-card hub-card">' +
+                '<div class="diet-brand-card-head">' +
+                '<span class="diet-brand-rank' + rankClass + '">' + b.rank + '</span>' +
+                '<div class="diet-brand-meta">' +
+                '<h4 class="diet-brand-name">' + dietBrandEscape(b.name) + '</h4>' +
+                (b.tagline ? '<span class="diet-brand-tag">' + dietBrandEscape(b.tagline) + '</span>' : '') +
+                '</div></div>' +
+                '<p class="diet-brand-desc">' + dietBrandEscape(b.description) + '</p>' +
+                '<button type="button" class="btn btn-outline btn-sm diet-brand-btn" onclick="openBabyFoodBrand(\'' + dietBrandEscape(b.key) + '\')">공식 사이트 →</button>' +
+                '</article>';
+        }).join('') +
+        '</div>' +
+        (data.disclaimer ? '<p class="diet-brands-note">' + dietBrandEscape(data.disclaimer) + '</p>' : '') +
+        '</div>';
+}
+
+async function openBabyFoodBrand(brandKey) {
+    if (!brandKey) return;
+    const babyId = typeof currentBabyId !== 'undefined' ? currentBabyId : null;
+    try {
+        const res = await fetch(API + '/api/baby-food-brands/click', {
+            method: 'POST',
+            headers: Object.assign({ 'Content-Type': 'application/json' }, authHeaders()),
+            body: JSON.stringify({ brand_key: brandKey, slot: 'diet', baby_id: babyId }),
+        });
+        if (!res.ok) throw new Error('click');
+        const data = await res.json();
+        if (data.redirect_url) {
+            window.open(data.redirect_url, '_blank', 'noopener,noreferrer');
+        }
+    } catch (e) {
+        if (typeof showToast === 'function') showToast('링크를 열 수 없습니다', 'error');
+    }
+}
+
+
 async function loadDietQuick(){
     const month=parseInt(document.getElementById('diet-month-quick').value)||6;
     const res=await fetch(API+'/api/diet-guides?month='+month,{headers:authHeaders()});
@@ -2030,6 +2158,7 @@ const pageMap = {
     'gift-plan': showGiftPlanPage,
     fortune: showFortunePage,
     'shopping-guide': showShoppingGuidePage,
+    'nursing-room': showNursingRoomPage,
     profile: loadDashboard,
     stats: showRecordStatsPage,
     timeline: showRecordStatsPage,

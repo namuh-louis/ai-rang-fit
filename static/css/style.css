@@ -3803,3 +3803,267 @@ html.text-size-large {
     }
 }
 
+/* ── 수유실 찾기 (플레이스홀더) ── */
+.nursing-page-head {
+    align-items: flex-start;
+}
+.nursing-source-badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: var(--color-accent-light);
+    color: var(--color-accent);
+    white-space: nowrap;
+}
+.nursing-status-banner {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 12px 14px;
+    border-radius: var(--radius-md);
+    margin-bottom: 12px;
+    font-size: 13px;
+    line-height: 1.45;
+}
+.nursing-status-banner p {
+    margin: 4px 0 0;
+    font-size: 12px;
+    color: var(--color-text-muted);
+}
+.nursing-status-pending {
+    background: #fff8e6;
+    border: 1px solid #ffe08a;
+}
+.nursing-status-ready {
+    background: #e8f8ef;
+    border: 1px solid #a8e6bf;
+}
+.nursing-status-icon {
+    font-size: 18px;
+    line-height: 1;
+    flex-shrink: 0;
+}
+.nursing-search-card { margin-bottom: 12px; }
+.nursing-zone-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+.nursing-zone-chip {
+    padding: 6px 10px !important;
+    font-size: 12px !important;
+}
+.nursing-zone-chip:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+.nursing-filter-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-top: 12px;
+}
+.nursing-father-toggle { flex: 1; }
+.nursing-results { min-height: 120px; }
+.nursing-empty-preview {
+    text-align: center;
+    padding: 28px 16px;
+    color: var(--color-text-muted);
+}
+.nursing-empty-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 12px 0 6px;
+}
+.nursing-empty-sub {
+    font-size: 12px;
+    margin: 0;
+    line-height: 1.5;
+}
+.nursing-room-card { margin-bottom: 8px; }
+.nursing-room-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+.nursing-room-name {
+    font-size: 14px;
+    font-weight: 700;
+    margin: 0;
+}
+.nursing-room-address {
+    font-size: 13px;
+    margin: 0 0 4px;
+    line-height: 1.45;
+}
+.nursing-room-meta {
+    font-size: 12px;
+    color: var(--color-text-muted);
+    margin: 2px 0 0;
+}
+.nursing-footer-note {
+    font-size: 11px;
+    color: var(--color-text-muted);
+    text-align: center;
+    margin-top: 16px;
+}
+.nursing-footer-note a {
+    color: var(--color-accent);
+    text-decoration: none;
+}
+
+/* ── 이유식 전문 브랜드 ── */
+.diet-brands-block {
+    margin-top: 20px;
+    padding-top: 18px;
+    border-top: 1px solid var(--color-border-light);
+}
+.diet-brands-head {
+    margin-bottom: 12px;
+}
+.diet-brands-title {
+    font-size: 15px;
+    font-weight: 700;
+    margin: 0 0 4px;
+    color: var(--color-text);
+}
+.diet-brands-sub {
+    font-size: 12px;
+    color: var(--color-text-muted);
+    margin: 0;
+    line-height: 1.45;
+}
+.diet-brand-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.diet-brand-card {
+    padding: 14px !important;
+    margin-bottom: 0 !important;
+}
+.diet-brand-card-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+.diet-brand-rank {
+    flex-shrink: 0;
+    width: 26px;
+    height: 26px;
+    border-radius: 8px;
+    background: var(--color-border-light);
+    color: var(--color-text-secondary);
+    font-size: 12px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.diet-brand-rank-top {
+    background: var(--grad-hero);
+    color: #fff;
+}
+.diet-brand-meta {
+    flex: 1;
+    min-width: 0;
+}
+.diet-brand-name {
+    font-size: 14px;
+    font-weight: 700;
+    margin: 0;
+    color: var(--color-text);
+}
+.diet-brand-tag {
+    display: inline-block;
+    margin-top: 3px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--color-accent);
+    background: var(--color-accent-light);
+    padding: 2px 7px;
+    border-radius: 99px;
+}
+.diet-brand-desc {
+    font-size: 12px;
+    line-height: 1.55;
+    color: var(--color-text-secondary);
+    margin: 0 0 10px;
+}
+.diet-brand-btn {
+    width: 100%;
+}
+.diet-brands-note {
+    font-size: 11px;
+    color: var(--color-text-muted);
+    text-align: center;
+    margin: 12px 0 0;
+    line-height: 1.45;
+}
+
+/* ── 놀이 가이드 ── */
+.playguide-card {
+    margin-bottom: 10px !important;
+    padding: 14px !important;
+}
+.playguide-card-head {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    margin-bottom: 8px;
+}
+.playguide-icon {
+    flex-shrink: 0;
+}
+.playguide-meta {
+    flex: 1;
+    min-width: 0;
+}
+.playguide-title {
+    font-size: 15px;
+    font-weight: 700;
+    margin: 0 0 6px;
+    color: var(--color-text);
+    line-height: 1.35;
+}
+.playguide-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+.playguide-tag {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 99px;
+}
+.playguide-tag-muted {
+    color: var(--color-text-secondary);
+    background: var(--color-border-light);
+}
+.playguide-desc {
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--color-text-secondary);
+    margin: 0 0 6px;
+}
+.playguide-material {
+    font-size: 12px;
+    color: var(--color-text-muted);
+    margin: 0;
+    padding: 8px 10px;
+    background: #F9FAFB;
+    border-radius: 8px;
+}
+.playguide-empty {
+    text-align: center;
+    padding: 32px 16px;
+    color: var(--color-text-secondary);
+    font-size: 13px;
+}
+

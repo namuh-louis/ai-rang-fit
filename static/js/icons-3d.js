@@ -41,6 +41,7 @@ const ICONS_3D = {
     chart: 'chart.png',
     fortune: 'birthday.png',
     shopping: 'gift.png',
+    nursing: 'feeding.png',
 };
 
 const ICONS_3D_GENDER = { male: 'boy', female: 'girl' };

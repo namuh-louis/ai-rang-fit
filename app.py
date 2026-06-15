@@ -710,6 +710,12 @@ class AffiliateClickIn(BaseModel):
     baby_id: Optional[str] = None
 
 
+class BabyFoodBrandClickIn(BaseModel):
+    brand_key: str
+    slot: str = "diet"
+    baby_id: Optional[str] = None
+
+
 class PhotoUpdateIn(BaseModel):
     taken_date: Optional[str] = None  # YYYY-MM-DD
     caption: Optional[str] = None
@@ -726,6 +732,8 @@ class ParentProfilesUpdate(BaseModel):
 SHOPPING_GUIDE_PATH = GUIDE_DATA_DIR / "shopping_guide.json"
 HOME_ADS_PATH = GUIDE_DATA_DIR / "home_ads.json"
 FINANCE_GUIDE_PATH = GUIDE_DATA_DIR / "finance_guide.json"
+BABY_FOOD_BRANDS_PATH = GUIDE_DATA_DIR / "baby_food_brands.json"
+PLAY_GUIDES_PATH = GUIDE_DATA_DIR / "play_guides.json"
 COUPANG_PARTNERS_AF_ID = os.getenv("COUPANG_PARTNERS_AF_ID", "")
 FORTUNE_DAILY_LIMIT = 3
 
@@ -742,6 +750,31 @@ def _load_home_ads_config() -> dict:
         return {}
     with open(HOME_ADS_PATH, encoding="utf-8") as f:
         return json.load(f)
+
+
+def _load_baby_food_brands() -> dict:
+    if not BABY_FOOD_BRANDS_PATH.exists():
+        return {"brands": [], "disclaimer": "", "updated_at": None}
+    with open(BABY_FOOD_BRANDS_PATH, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def _load_play_guides_data() -> dict:
+    if not PLAY_GUIDES_PATH.exists():
+        return {"guides": [], "disclaimer": "", "updated_at": None}
+    with open(PLAY_GUIDES_PATH, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def _filter_play_guides(guides: list, month: int = None, category: str = None) -> list:
+    items = list(guides)
+    if category:
+        items = [g for g in items if g.get("category") == category]
+    if month is not None:
+        matched = [g for g in items if month in (g.get("suitable_months") or [])]
+        if matched:
+            items = matched
+    return items
 
 
 def _product_key(keyword: str, category_key: str, rank: int) -> str:
@@ -2194,6 +2227,37 @@ async def shopping_guide(keyword: str = "basic", month: str = None, user: User =
     }
 
 
+@app.get("/api/nursing-rooms/status")
+async def nursing_rooms_status(user: User = Depends(get_current_user)):
+    """수유정보 알리미 API 연동 상태 (키 승인 전 플레이스홀더)"""
+    key = os.getenv("SOOYUSIL_API_KEY", "").strip()
+    if key:
+        return {
+            "ready": True,
+            "message": "인증키가 설정되었습니다. 검색 연동을 준비 중입니다.",
+            "source": "수유정보 알리미",
+        }
+    return {
+        "ready": False,
+        "message": "인증키 승인 후 전국 수유실 검색이 제공됩니다.",
+        "source": "수유정보 알리미",
+    }
+
+
+@app.get("/api/nursing-rooms")
+async def nursing_rooms_search(
+    zone: str = "",
+    q: str = "",
+    father_only: str = "0",
+    user: User = Depends(get_current_user),
+):
+    """수유실 검색 — SOOYUSIL_API_KEY 설정 후 프록시 연동 예정"""
+    key = os.getenv("SOOYUSIL_API_KEY", "").strip()
+    if not key:
+        return {"rooms": [], "message": "API 연동 예정입니다.", "zone": zone, "q": q}
+    return {"rooms": [], "message": "검색 연동 구현 예정입니다.", "zone": zone, "q": q}
+
+
 @app.get("/api/home/ads")
 async def home_ads(baby_id: str = None, user: User = Depends(get_current_user)):
     """홈 롤링 배너 슬롯 (월령 맞춤 쇼핑 + 프로모)"""
@@ -2549,18 +2613,22 @@ async def get_credits(user: User = Depends(get_current_user)):
 
 @app.get("/api/playguides")
 async def get_playguides(month: int = None, category: str = None):
-    db = get_current_db()
-    q = db.query(PlayGuide)
-    if month is not None:
-        q = q.filter(PlayGuide.suitable_months.contains(month))
-    if category:
-        q = q.filter(PlayGuide.category == category)
-    items = q.all()
-    db.close()
-    return [{"id": pg.id, "title": pg.title, "description": pg.description,
-             "suitable_months": pg.suitable_months, "category": pg.category,
-             "difficulty": pg.difficulty, "material_needed": pg.material_needed,
-             "duration_min": pg.duration_min} for pg in items]
+    """발달 놀이 가이드 — JSON 기반 (Vercel 등 DB 무관)"""
+    data = _load_play_guides_data()
+    guides = _filter_play_guides(data.get("guides", []), month, category)
+    return [
+        {
+            "id": g.get("id"),
+            "title": g.get("title"),
+            "description": g.get("description"),
+            "suitable_months": g.get("suitable_months", []),
+            "category": g.get("category"),
+            "difficulty": g.get("difficulty", 1),
+            "material_needed": g.get("material_needed"),
+            "duration_min": g.get("duration_min", 15),
+        }
+        for g in guides
+    ]
 
 
 @app.post("/api/playguides")
@@ -2618,6 +2686,37 @@ async def get_diet_guides(month: int = None):
     }
     recipes = recipes_by_month.get(month, recipes_by_month.get(6, []))
     return {"month": month, "recipes": recipes, "tip": f"만 {month}개월: 알레르기 테스트 후 진행하세요"}
+
+
+@app.get("/api/baby-food-brands")
+async def get_baby_food_brands(user: User = Depends(get_current_user)):
+    """이유식 전문 브랜드 TOP 목록"""
+    data = _load_baby_food_brands()
+    return {
+        "brands": data.get("brands", []),
+        "disclaimer": data.get("disclaimer", ""),
+        "updated_at": data.get("updated_at"),
+    }
+
+
+@app.post("/api/baby-food-brands/click")
+async def baby_food_brand_click(body: BabyFoodBrandClickIn, user: User = Depends(get_current_user)):
+    """이유식 브랜드 외부 링크 클릭 로그"""
+    data = _load_baby_food_brands()
+    brand = next((b for b in data.get("brands", []) if b.get("key") == body.brand_key), None)
+    if not brand or not brand.get("url"):
+        raise HTTPException(status_code=404, detail="브랜드를 찾을 수 없습니다")
+    db = get_current_db()
+    db.add(AffiliateClick(
+        user_id=user.id,
+        baby_id=body.baby_id,
+        product_key=f"baby_food:{body.brand_key}",
+        platform="brand",
+        slot=body.slot,
+    ))
+    db.commit()
+    db.close()
+    return {"redirect_url": brand["url"], "brand_name": brand.get("name", "")}
 
 
 # ---------------------------------------------------------------------------

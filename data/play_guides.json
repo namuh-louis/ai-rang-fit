@@ -1,0 +1,286 @@
+{
+  "updated_at": "2026-06-04",
+  "disclaimer": "아이 상태에 맞게 시간을 조절하고, 안전을 최우선으로 진행하세요.",
+  "guides": [
+    {
+      "id": "pg-001",
+      "title": "눈 맞춤 놀이",
+      "description": "30cm 거리에서 천천히 웃으며 눈을 맞춰보세요. 애착 형성과 시각 집중에 도움이 됩니다.",
+      "suitable_months": [0, 1, 2, 3],
+      "category": "social",
+      "difficulty": 1,
+      "material_needed": "없음 (편안한 자세)",
+      "duration_min": 5
+    },
+    {
+      "id": "pg-002",
+      "title": "까꿍 놀이",
+      "description": "손으로 얼굴을 가렸다 펴며 '까꿍!' 해보세요. 사라졌다 나타나는 개념을 익히고 웃음 반응을 이끌어냅니다.",
+      "suitable_months": [3, 4, 5, 6],
+      "category": "social",
+      "difficulty": 1,
+      "material_needed": "없음",
+      "duration_min": 10
+    },
+    {
+      "id": "pg-003",
+      "title": "거울 놀이",
+      "description": "안전 거울 앞에 아이를 세워 표정을 따라 하게 해보세요. 자아 인식과 사회적 미소 발달에 좋습니다.",
+      "suitable_months": [5, 6, 7, 8, 9],
+      "category": "social",
+      "difficulty": 1,
+      "material_needed": "아기용 안전 거울",
+      "duration_min": 10
+    },
+    {
+      "id": "pg-004",
+      "title": "인사·박수 놀이",
+      "description": "'안녕', '박수'를 보여주고 손을 잡아 함께 해보세요. 모방과 상호작용 능력을 키웁니다.",
+      "suitable_months": [7, 8, 9, 10, 11, 12],
+      "category": "social",
+      "difficulty": 1,
+      "material_needed": "없음",
+      "duration_min": 10
+    },
+    {
+      "id": "pg-005",
+      "title": "역할 놀이 — 인형 돌보기",
+      "description": "인형에게 이불 덮어주기, 밥 먹이기를 해보세요. 타인에 대한 공감과 돌봄 행동을 익힙니다.",
+      "suitable_months": [12, 15, 18, 21, 24],
+      "category": "social",
+      "difficulty": 2,
+      "material_needed": "봉제 인형, 작은 이불",
+      "duration_min": 15
+    },
+    {
+      "id": "pg-006",
+      "title": "함께 정리하기",
+      "description": "장난감 2~3개를 함께 바구니에 넣어보세요. 순서·규칙 이해와 협동감을 기릅니다.",
+      "suitable_months": [15, 18, 21, 24, 30],
+      "category": "social",
+      "difficulty": 2,
+      "material_needed": "장난감, 바구니",
+      "duration_min": 10
+    },
+    {
+      "id": "pg-007",
+      "title": "엄마·아빠 따라 하기",
+      "description": "간단한 동작(손 흔들기, 박수)을 먼저 보여주고 따라 하게 해보세요. 모방을 통한 사회성 발달에 좋습니다.",
+      "suitable_months": [6, 7, 8, 9, 10],
+      "category": "social",
+      "difficulty": 1,
+      "material_needed": "없음",
+      "duration_min": 10
+    },
+    {
+      "id": "pg-008",
+      "title": "다양한 소리 듣기",
+      "description": "딸랑이, 종, 부드러운 음악을 들려주며 소리 방향을 쳐다보게 해보세요. 청각·주의 집중 발달에 도움이 됩니다.",
+      "suitable_months": [0, 1, 2, 3, 4],
+      "category": "sensory",
+      "difficulty": 1,
+      "material_needed": "딸랑이, 작은 탬버린",
+      "duration_min": 10
+    },
+    {
+      "id": "pg-009",
+      "title": "촉감 카드 놀이",
+      "description": "부드러운 천, 거친 수세미 등 다양한 촉감을 손등·손바닥에 대보세요. 촉각 자극과 탐색 욕구를 자극합니다.",
+      "suitable_months": [4, 5, 6, 7, 8],
+      "category": "sensory",
+      "difficulty": 1,
+      "material_needed": "천 조각, 부드러운 브러시",
+      "duration_min": 15
+    },
+    {
+      "id": "pg-010",
+      "title": "미지근한 물놀이",
+      "description": "미지근한 물에 손·발을 담가보게 해보세요. 온도·촉감 변화를 느끼며 감각 통합에 좋습니다.",
+      "suitable_months": [4, 5, 6, 7, 8],
+      "category": "sensory",
+      "difficulty": 1,
+      "material_needed": "넓은 그릇, 미지근한 물, 수건",
+      "duration_min": 15
+    },
+    {
+      "id": "pg-011",
+      "title": "색깔·모양 탐색",
+      "description": "빨강·노랑·파랑 블록이나 공을 보여주며 이름을 불러주세요. 시각·색 구분 능력을 키웁니다.",
+      "suitable_months": [8, 9, 10, 11, 12],
+      "category": "sensory",
+      "difficulty": 1,
+      "material_needed": "색깔 블록 또는 공 3~5개",
+      "duration_min": 15
+    },
+    {
+      "id": "pg-012",
+      "title": "쌀·콩 통 만지기",
+      "description": "깨끗한 쌀이나 콩이 담긴 통에 손을 넣어 만져보게 하세요. 미세한 촉감과 집중력 발달에 좋습니다. (항상 감독)",
+      "suitable_months": [10, 12, 15, 18],
+      "category": "sensory",
+      "difficulty": 2,
+      "material_needed": "깊은 통, 쌀 또는 콩",
+      "duration_min": 15
+    },
+    {
+      "id": "pg-013",
+      "title": "향기 맡기",
+      "description": "바나나, 사과 등 익숙한 과일 향을 맡게 해보세요. 후각·식욕 자극과 언어 연결에 도움이 됩니다.",
+      "suitable_months": [6, 7, 8, 9, 10],
+      "category": "sensory",
+      "difficulty": 1,
+      "material_needed": "신선한 과일",
+      "duration_min": 10
+    },
+    {
+      "id": "pg-014",
+      "title": "그림책 읽어주기",
+      "description": "표정이 풍부한 그림책을 천천히 읽으며 그림을 가리키세요. '이건 뭐예요?'라고 질문해보세요.",
+      "suitable_months": [4, 5, 6, 7, 8, 9, 10, 12],
+      "category": "language",
+      "difficulty": 1,
+      "material_needed": "보드북 1~2권",
+      "duration_min": 15
+    },
+    {
+      "id": "pg-015",
+      "title": "동요 부르기",
+      "description": "짧은 동요를 반복해서 불러주고 손동작을 함께 해보세요. 리듬감과 어휘 노출에 좋습니다.",
+      "suitable_months": [3, 4, 5, 6, 7, 8, 9],
+      "category": "language",
+      "difficulty": 1,
+      "material_needed": "없음 (또는 동요 영상)",
+      "duration_min": 10
+    },
+    {
+      "id": "pg-016",
+      "title": "사물 이름 알려주기",
+      "description": "일상 물건(컵, 숟가락, 인형)을 가리키며 이름을 또박또박 말해주세요. 첫 단어 이해에 도움이 됩니다.",
+      "suitable_months": [6, 7, 8, 9, 10, 11, 12],
+      "category": "language",
+      "difficulty": 1,
+      "material_needed": "주변 일상 물건",
+      "duration_min": 10
+    },
+    {
+      "id": "pg-017",
+      "title": "옹알이 대화",
+      "description": "아이가 내는 소리에 똑같이 따라 하며 대화하듯 응답해보세요. 발화 욕구와 상호작용을 촉진합니다.",
+      "suitable_months": [4, 5, 6, 7, 8],
+      "category": "language",
+      "difficulty": 1,
+      "material_needed": "없음",
+      "duration_min": 10
+    },
+    {
+      "id": "pg-018",
+      "title": "그림·사진 설명하기",
+      "description": "가족 사진이나 그림 속 인물·사물을 설명해주세요. '엄마', '아빠', '강아지' 등 단어를 반복합니다.",
+      "suitable_months": [9, 10, 11, 12, 15, 18],
+      "category": "language",
+      "difficulty": 1,
+      "material_needed": "가족 사진 또는 그림 카드",
+      "duration_min": 10
+    },
+    {
+      "id": "pg-019",
+      "title": "선택하기 놀이",
+      "description": "두 가지 중 하나를 가리키게 해보세요. '공이야, 블록이야?' 선택과 의사 표현 연습에 좋습니다.",
+      "suitable_months": [12, 15, 18, 21, 24],
+      "category": "language",
+      "difficulty": 2,
+      "material_needed": "장난감 2종",
+      "duration_min": 10
+    },
+    {
+      "id": "pg-020",
+      "title": "동작·상황 말로 표현",
+      "description": "밥 먹을 때 '맛있게 먹어', 나갈 때 '신발 신자'처럼 상황에 맞는 말을 반복해주세요.",
+      "suitable_months": [10, 12, 15, 18, 21],
+      "category": "language",
+      "difficulty": 1,
+      "material_needed": "없음",
+      "duration_min": 10
+    },
+    {
+      "id": "pg-021",
+      "title": "터미타임",
+      "description": "매트 위에 엎드려 고개 들기를 격려해보세요. 목·어깨 근육과 대근육 기초를 다집니다.",
+      "suitable_months": [1, 2, 3, 4],
+      "category": "motor",
+      "difficulty": 1,
+      "material_needed": "요가 매트",
+      "duration_min": 5
+    },
+    {
+      "id": "pg-022",
+      "title": "발차기 놀이",
+      "description": "누워서 발로 공이나 풍선을 차게 해보세요. 하체 근력과 협응력 발달에 좋습니다.",
+      "suitable_months": [2, 3, 4, 5, 6],
+      "category": "motor",
+      "difficulty": 1,
+      "material_needed": "부드러운 공 또는 풍선",
+      "duration_min": 10
+    },
+    {
+      "id": "pg-023",
+      "title": "기어다니기 유도",
+      "description": "좋아하는 장난감을 앞에 두고 기어가도록 격려해보세요. 팔·다리 협응과 공간 탐색에 도움이 됩니다.",
+      "suitable_months": [6, 7, 8, 9, 10],
+      "category": "motor",
+      "difficulty": 2,
+      "material_needed": "선호 장난감 1개",
+      "duration_min": 15
+    },
+    {
+      "id": "pg-024",
+      "title": "블록 쌓기",
+      "description": "큰 블록 3~5개를 함께 쌓아보세요. 손끝 조작과 집중력, 성취감을 키웁니다.",
+      "suitable_months": [8, 9, 10, 11, 12, 15],
+      "category": "motor",
+      "difficulty": 1,
+      "material_needed": "소프트 블록 5개 이상",
+      "duration_min": 15
+    },
+    {
+      "id": "pg-025",
+      "title": "잡고 서기·걸음 돕기",
+      "description": "소파나 부모 손을 잡고 일어서기·걸음을 연습해보세요. 균형감과 하체 근력을 기릅니다.",
+      "suitable_months": [9, 10, 11, 12, 13, 14, 15],
+      "category": "motor",
+      "difficulty": 2,
+      "material_needed": "안정된 가구 또는 부모 손",
+      "duration_min": 15
+    },
+    {
+      "id": "pg-026",
+      "title": "공 굴리기",
+      "description": "공을 천천히 굴려 아이가 잡거나 따라가게 해보세요. 눈·손 협응과 이동 능력에 좋습니다.",
+      "suitable_months": [6, 7, 8, 9, 10, 11, 12],
+      "category": "motor",
+      "difficulty": 1,
+      "material_needed": "부드러운 공",
+      "duration_min": 15
+    },
+    {
+      "id": "pg-027",
+      "title": "색연필·크레용 그리기",
+      "description": "굵은 크레용을 잡고 종이에 자유롭게 그려보게 하세요. 소근육과 창의 표현을 자극합니다.",
+      "suitable_months": [12, 15, 18, 21, 24, 30],
+      "category": "motor",
+      "difficulty": 2,
+      "material_needed": "굵은 크레용, 큰 종이",
+      "duration_min": 15
+    },
+    {
+      "id": "pg-028",
+      "title": "계단·경사 오르기",
+      "description": "안전한 경사나 낮은 계단에서 손 잡고 오르내리기를 해보세요. 다리 근력과 균형감을 키웁니다.",
+      "suitable_months": [12, 15, 18, 21, 24],
+      "category": "motor",
+      "difficulty": 2,
+      "material_needed": "안전한 실내 경사·계단",
+      "duration_min": 15
+    }
+  ]
+}
