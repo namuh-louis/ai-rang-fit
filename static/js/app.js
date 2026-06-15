@@ -1852,6 +1852,12 @@ function switchDietSubTab(tab, skipScroll) {
         const key = (b.id || '').replace('diet-sub-', '');
         b.classList.toggle('hub-tab-btn-active', key === tab);
     });
+    const existing = document.getElementById('diet-tab-content');
+    if (!existing) {
+        const root = document.getElementById('diet-root') || document.getElementById('dev-tab-content');
+        if (root) renderDietTab(root);
+        return;
+    }
     refreshDietSubContent();
 }
 
@@ -1932,9 +1938,13 @@ async function fetchBabyFoodBrands(month) {
 let _dietBrandReq = 0;
 
 function showDietPage() {
-    window._dietSubTab = 'recipe';
-    showPlayGuidesPage();
-    switchDevTab('diet');
+    document.getElementById('main-content').innerHTML =
+        '<div class="hub-page">' +
+        hubPageHeader('이유식', '직접 만들기 · 배달·구독') +
+        '<div id="diet-root"></div></div>';
+    const root = document.getElementById('diet-root');
+    if (root) renderDietTab(root);
+    if (typeof enhanceIcons3d === 'function') enhanceIcons3d(document.getElementById('main-content'));
 }
 
 function renderBrandCard(b, opts) {
@@ -1942,15 +1952,15 @@ function renderBrandCard(b, opts) {
     const rankClass = b.rank <= 3 ? ' diet-brand-rank-top' : '';
     const compact = opts.compact;
     const featured = opts.featured;
-    const cardClass = 'diet-brand-card hub-card' +
-        (compact ? ' diet-brand-card-compact' : '') +
+    const cardClass = 'diet-brand-card' +
+        (compact ? ' diet-brand-compact-card' : ' hub-card') +
         (featured ? ' diet-brand-card-featured' : '');
     if (compact) {
-        return '<button type="button" class="' + cardClass + '" onclick="openBabyFoodBrand(\'' + dietBrandEscape(b.key) + '\')">' +
+        return '<div role="button" tabindex="0" class="' + cardClass + '" onclick="openBabyFoodBrand(\'' + dietBrandEscape(b.key) + '\')">' +
             '<span class="diet-brand-rank' + rankClass + '">' + b.rank + '</span>' +
             '<span class="diet-brand-compact-name">' + dietBrandEscape(b.name) + '</span>' +
             '<span class="diet-brand-compact-tag">' + dietBrandEscape(b.tagline || '') + '</span>' +
-            '</button>';
+            '</div>';
     }
     return '<article class="' + cardClass + '">' +
         '<div class="diet-brand-card-head">' +
@@ -2063,7 +2073,7 @@ async function loadDietDeliveryPanel(month) {
         if (!panelNow) return;
         panelNow.innerHTML =
             '<p class="diet-empty-msg">목록을 불러오지 못했습니다.</p>' +
-            '<p class="diet-empty-msg" style="margin-top:8px;font-size:12px;">로컬은 <code>uvicorn app:app --port 8000</code>으로 실행했는지 확인해 주세요.</p>';
+            '<p class="diet-empty-hint">서버가 꺼져 있으면 터미널에서 uvicorn app:app --port 8000 으로 실행해 주세요.</p>';
     }
 }
 
