@@ -129,7 +129,7 @@ function sectionCard(content, mb) {
     return '<div class="hub-card" style="margin-bottom:' + mb + '">' + content + '</div>';
 }
 function setHubTabActive(prefix, tab) {
-    document.querySelectorAll('[id^="' + prefix + '"]').forEach(function (b) {
+    document.querySelectorAll('button[id^="' + prefix + '"]').forEach(function (b) {
         const id = b.id || '';
         const key = id.replace(prefix, '');
         b.classList.toggle('hub-tab-btn-active', key === tab);
@@ -1638,13 +1638,13 @@ function showPlayGuidesPage(){
             return '<button type="button" id="dev-tab-' + t[0] + '" class="hub-tab-btn' + (i === 0 ? ' hub-tab-btn-active' : '') + '" onclick="switchDevTab(\'' + t[0] + '\')">' + t[1] + '</button>';
         }).join('') +
         '</div>' +
-        '<div id="dev-tab-content"></div></div>';
+        '<div id="dev-panel"></div></div>';
     switchDevTab('dev');
 }
 
 function switchDevTab(tab) {
     setHubTabActive('dev-tab-', tab);
-    const c = document.getElementById('dev-tab-content'); if (!c) return;
+    const c = document.getElementById('dev-panel'); if (!c) return;
     if (tab === 'dev')  renderDevGuide(c);
     else if (tab === 'play') renderPlayGuideTab(c);
     else if (tab === 'diet') renderDietTab(c);
@@ -1843,21 +1843,28 @@ function renderDietTab(c) {
             return '<button type="button" onclick="selectDietMonth(' + m + ')" id="diet-chip-' + m + '" class="hub-chip' + (m === sel ? ' hub-chip-active' : '') + '">' + DIET_MONTH_LABELS[i] + '</button>';
         }).join('') + '</div>' +
         '<div id="diet-tab-content"></div>';
-    switchDietSubTab(subTab, true);
+    document.querySelectorAll('.diet-sub-tab-bar .hub-tab-btn').forEach(function (b) {
+        const key = (b.id || '').replace('diet-sub-', '');
+        b.classList.toggle('hub-tab-btn-active', key === subTab);
+    });
+    refreshDietSubContent();
 }
 
-function switchDietSubTab(tab, skipScroll) {
+function switchDietSubTab(tab) {
     window._dietSubTab = tab;
+    if (!document.getElementById('diet-tab-content')) {
+        if (document.getElementById('diet-root')) {
+            renderDietTab(document.getElementById('diet-root'));
+            return;
+        }
+        showPlayGuidesPage();
+        switchDevTab('diet');
+        return;
+    }
     document.querySelectorAll('.diet-sub-tab-bar .hub-tab-btn').forEach(function (b) {
         const key = (b.id || '').replace('diet-sub-', '');
         b.classList.toggle('hub-tab-btn-active', key === tab);
     });
-    const existing = document.getElementById('diet-tab-content');
-    if (!existing) {
-        const root = document.getElementById('diet-root') || document.getElementById('dev-tab-content');
-        if (root) renderDietTab(root);
-        return;
-    }
     refreshDietSubContent();
 }
 
@@ -1924,15 +1931,24 @@ function getDietBrandQueryMonth(month) {
 
 async function fetchBabyFoodBrands(month) {
     const queryMonth = getDietBrandQueryMonth(month);
-    const res = await fetch(API + '/api/baby-food-brands?month=' + queryMonth, { headers: authHeaders() });
-    const ct = (res.headers.get('content-type') || '').toLowerCase();
-    if (!res.ok || ct.indexOf('application/json') < 0) {
-        throw new Error('brands ' + res.status);
+    const controller = new AbortController();
+    const timer = setTimeout(function () { controller.abort(); }, 8000);
+    try {
+        const res = await fetch(API + '/api/baby-food-brands?month=' + queryMonth, {
+            headers: authHeaders(),
+            signal: controller.signal,
+        });
+        const ct = (res.headers.get('content-type') || '').toLowerCase();
+        if (!res.ok || ct.indexOf('application/json') < 0) {
+            throw new Error('brands ' + res.status);
+        }
+        const data = await res.json();
+        data._query_month = queryMonth;
+        data._is_preview = (parseInt(month, 10) || 0) < (data.min_month || 6);
+        return data;
+    } finally {
+        clearTimeout(timer);
     }
-    const data = await res.json();
-    data._query_month = queryMonth;
-    data._is_preview = (parseInt(month, 10) || 0) < (data.min_month || 6);
-    return data;
 }
 
 let _dietBrandReq = 0;
@@ -2073,7 +2089,8 @@ async function loadDietDeliveryPanel(month) {
         if (!panelNow) return;
         panelNow.innerHTML =
             '<p class="diet-empty-msg">목록을 불러오지 못했습니다.</p>' +
-            '<p class="diet-empty-hint">서버가 꺼져 있으면 터미널에서 uvicorn app:app --port 8000 으로 실행해 주세요.</p>';
+            '<p class="diet-empty-hint">로컬 서버가 꺼져 있으면 터미널에서 아래 명령으로 실행해 주세요.</p>' +
+            '<p class="diet-empty-hint diet-empty-code">cd Curosr/Ai-rang-fit && .venv/bin/uvicorn app:app --port 8000</p>';
     }
 }
 

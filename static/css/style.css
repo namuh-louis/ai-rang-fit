@@ -1953,9 +1953,12 @@ body::after {
     display: flex;
     gap: 6px;
     margin-bottom: 16px;
+    min-width: 0;
+    width: 100%;
 }
 .hub-tab-btn {
-    flex: 1;
+    flex: 1 1 0;
+    min-width: 0;
     padding: 12px 8px;
     min-height: var(--touch-min);
     border-radius: var(--radius-md);
@@ -3918,7 +3921,12 @@ html.text-size-large {
 
 /* ── 이유식 전문 브랜드 ── */
 .diet-month-desc { margin-bottom: 10px !important; }
-.diet-sub-tab-bar { margin-bottom: 12px; }
+.diet-sub-tab-bar { margin-bottom: 12px; min-width: 0; }
+.dev-panel {
+    min-width: 0;
+    width: 100%;
+    overflow-x: hidden;
+}
 .diet-empty-msg {
     text-align: center;
     padding: 24px 16px;
@@ -3931,6 +3939,11 @@ html.text-size-large {
     color: var(--color-text-muted);
     font-size: 12px;
     line-height: 1.5;
+}
+.diet-empty-code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 11px;
+    word-break: break-all;
 }
 #diet-tab-content,
 #diet-root {
